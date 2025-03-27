@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUMON记忆切割评估系统 - 结果</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+            background-color: #BEDEE3;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1160px 1fr;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+            gap: 0;
+            position: relative;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* 垂直分割线 */
+        .vertical-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background-color: #0D242E;
+            z-index: 2;
+        }
+
+        .vertical-divider-1 {
+            left: calc((100% - 1160px) / 2);
+        }
+
+        .vertical-divider-2 {
+            right: calc((100% - 1160px) / 2);
+        }
+
+        /* 水平分割线 */
+        .horizontal-divider {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #0D242E;
+            z-index: 2;
+        }
+
+        .horizontal-divider-1 {
+            top: 80px;
+        }
+
+        .horizontal-divider-2 {
+            bottom: 80px;
+        }
+
+        /* 分割线交叉点的小方块 */
+        .divider-square {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #0D242E;
+            z-index: 3;
+        }
+
+        /* 左上角的方块 */
+        .square-top-left {
+            top: 75px;
+            left: calc((100% - 1160px) / 2 - 5px);
+        }
+
+        /* 右上角的方块 */
+        .square-top-right {
+            top: 75px;
+            right: calc((100% - 1160px) / 2 - 5px);
+        }
+
+        /* 左下角的方块 */
+        .square-bottom-left {
+            bottom: 75px;
+            left: calc((100% - 1160px) / 2 - 5px);
+        }
+
+        /* 右下角的方块 */
+        .square-bottom-right {
+            bottom: 75px;
+            right: calc((100% - 1160px) / 2 - 5px);
+        }
+
+        .header {
+            grid-column: 2;
+            grid-row: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            background-color: #BEDEE3;
+            height: 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .visitor-info {
+            position: absolute;
+            left: 2rem;
+            font-family: monospace;
+            font-size: 12px;
+            color: #0D242E;
+        }
+
+        .visitor-id {
+            font-weight: bold;
+        }
+
+        .visitor-status {
+            color: #666;
+            margin-left: 8px;
+        }
+
+        .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none; /* 隐藏logo */
+        }
+
+        .logo img {
+            height: 60px;
+            width: auto;
+            filter: brightness(0);
+        }
+
+        .language-selector {
+            position: absolute;
+            right: 2rem;
+        }
+
+        .language-selector button {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 1px solid #0D242E;
+            background: none;
+            color: #0D242E;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .language-selector button:hover {
+            background-color: #0D242E;
+            color: #fff;
+        }
+
+        .main-content {
+            grid-column: 2;
+            grid-row: 2;
+            width: 100%;
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 15px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .result-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            color: #0D242E;
+            text-align: center;
+        }
+
+        .result-content {
+            width: 900px;
+            background-color: #fff;
+            padding: 40px;
+            color: #0D242E;
+            font-size: 1rem;
+            line-height: 1.5;
+            border: 1px solid #0D242E;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .report-header img {
+            height: 60px;
+            width: auto;
+            filter: brightness(0);
+        }
+
+        .report-header .copyright {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .report-title {
+            position: relative;
+            height: 17px;
+            background: url('images/vector.svg') repeat-x;
+            margin-bottom: 30px;
+        }
+
+        .report-title span {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: #0D242E;
+            text-shadow: 
+                -1px -1px 0 #fff,
+                1px -1px 0 #fff,
+                -1px 1px 0 #fff,
+                1px 1px 0 #fff;
+        }
+
+        .report-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 40px;
+            margin-top: -10px;
+        }
+
+        .role-image {
+            width: 250px;
+            height: 250px;
+            background-color: #f5f5f5;
+            position: relative;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        .role-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            filter: grayscale(100%) contrast(1.2);
+        }
+
+        .role-text {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 0; /* 防止文本溢出 */
+        }
+
+        .role-text h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .role-text p {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 5px;
+        }
+
+        .role-text ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .role-text li {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .action-button {
+            padding: 12px 24px;
+            background-color: #0D242E;
+            border: 1px solid #0D242E;
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 260px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-button:hover {
+            background-color: #fff;
+            color: #0D242E;
+        }
+
+        .action-button.retake {
+            background-color: #fff;
+            color: #0D242E;
+        }
+
+        .action-button.retake:hover {
+            background-color: #0D242E;
+            color: #fff;
+        }
+
+        .footer {
+            grid-column: 2;
+            grid-row: 3;
+            padding: 1rem;
+            background-color: #BEDEE3;
+            height: 80px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            text-align: left;
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        .footer-left p,
+        .footer-right p {
+            font-size: 12px;
+            font-family: monospace;
+            color: #0D242E;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-columns: 20px 1fr 20px;
+            }
+            
+            .vertical-divider-1 {
+                left: 20px;
+            }
+            
+            .vertical-divider-2 {
+                right: 20px;
+            }
+
+            .square-top-left {
+                left: 15px;
+            }
+
+            .square-top-right {
+                right: 15px;
+            }
+
+            .square-bottom-left {
+                left: 15px;
+            }
+
+            .square-bottom-right {
+                right: 15px;
+            }
+
+            .main-content {
+                max-width: 100%;
+                padding: 30px 20px;
+            }
+
+            .result-container {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+            }
+
+            .header, .main-content, .footer {
+                grid-column: 1;
+            }
+
+            .vertical-divider-1 {
+                left: 20px;
+            }
+            
+            .vertical-divider-2 {
+                right: 20px;
+            }
+
+            .horizontal-divider-1 {
+                top: 80px;
+            }
+
+            .horizontal-divider-2 {
+                bottom: 80px;
+            }
+
+            .square-top-left {
+                left: 15px;
+            }
+
+            .square-top-right {
+                right: 15px;
+            }
+
+            .square-bottom-left {
+                left: 15px;
+            }
+
+            .square-bottom-right {
+                right: 15px;
+            }
+
+            .language-selector {
+                right: 2.5rem;
+            }
+
+            .result-title {
+                font-size: 1.25rem;
+                padding: 0 16px;
+            }
+
+            .result-content {
+                width: 100%;
+                padding: 20px;
+                font-size: 0.9rem;
+            }
+
+            .button-container {
+                flex-direction: column;
+                width: 100%;
+                padding: 0 16px;
+            }
+
+            .action-button {
+                width: 100%;
+            }
+        }
+
+        .report-details {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            line-height: 1;
+            white-space: nowrap; /* 防止文本换行 */
+            overflow: hidden;
+            text-overflow: ellipsis; /* 如果文本太长，显示省略号 */
+        }
+
+        .report-details p {
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .report-details ul {
+            list-style-type: none;
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        .report-details li {
+            margin-bottom: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <!-- 垂直分割线 -->
+        <div class="vertical-divider vertical-divider-1"></div>
+        <div class="vertical-divider vertical-divider-2"></div>
+
+        <!-- 水平分割线 -->
+        <div class="horizontal-divider horizontal-divider-1"></div>
+        <div class="horizontal-divider horizontal-divider-2"></div>
+
+        <!-- 分割线交叉点的小方块 -->
+        <div class="divider-square square-top-left"></div>
+        <div class="divider-square square-top-right"></div>
+        <div class="divider-square square-bottom-left"></div>
+        <div class="divider-square square-bottom-right"></div>
+
+        <header class="header">
+            <div class="visitor-info">
+                <span class="visitor-id"><span id="visitorPrefix">访客_#</span><span id="visitorNumber"></span></span>
+                <span class="visitor-status">• <span id="visitorStatus">未授权</span></span>
+            </div>
+            <div class="logo">
+                <img src="images/lumon-logo-stroke.svg" alt="Logo">
+            </div>
+            <div class="language-selector">
+                <button onclick="toggleLanguage(this)">CN</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="result-container">
+                <div class="result-content" id="resultContent">
+                    <!-- 结果内容将通过 JavaScript 动态生成 -->
+                </div>
+                <div class="button-container">
+                    <button class="action-button" onclick="downloadReport()">下载报告</button>
+                    <button class="action-button retake" onclick="retakeTest()">重新测试</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-left">
+                <p>Made with love by koko</p>
+            </div>
+            <div class="footer-right">
+                <p>Tools used: Cursor, Deepseek</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 生成随机4位数访客ID
+        function generateVisitorId() {
+            return Math.floor(1000 + Math.random() * 9000);
+        }
+
+        // 设置访客ID
+        document.getElementById('visitorNumber').textContent = generateVisitorId();
+
+        // 文本数据
+        const texts = {
+            cn: {
+                download: "下载报告",
+                retake: "重新测试",
+                visitorPrefix: "访客_#",
+                visitorStatus: "未授权"
+            },
+            en: {
+                download: "Download Report",
+                retake: "+ Test Again +",
+                visitorPrefix: "Visitor_#",
+                visitorStatus: "Unauthorized"
+            }
+        };
+
+        let currentLanguage = 'cn';
+
+        // 角色分析数据
+        const roleAnalysis = {
+            cn: {
+                A: {
+                    name: "马克·S",
+                    description: "你们切得开记忆，切不开人性！",
+                    traits: [
+                        "理性克制，善于权衡利弊",
+                        "在妥协与反抗间寻找平衡",
+                        "注重自我保护",
+                        "善于在规则框架内生存"
+                    ]
+                },
+                B: {
+                    name: "赫莉·R",
+                    description: "你们切得开记忆，切不开人性！",
+                    traits: [
+                        "对不公极度敏感",
+                        "敢于直面真相",
+                        "追求正义与透明",
+                        "不愿被制度束缚"
+                    ]
+                },
+                C: {
+                    name: "迪伦·G",
+                    description: "你们切得开记忆，切不开人性！",
+                    traits: [
+                        "重情重义",
+                        "愿意为他人付出",
+                        "道德感高于服从性",
+                        "重视人际关系"
+                    ]
+                },
+                D: {
+                    name: "欧文·B",
+                    description: "你们切得开记忆，切不开人性！",
+                    traits: [
+                        "善于观察和思考",
+                        "用温和方式表达立场",
+                        "坚守人性底线",
+                        "避免直接冲突"
+                    ]
+                }
+            },
+            en: {
+                A: {
+                    name: "Mark S.",
+                    description: "You can sever memories, but you cannot sever humanity!",
+                    traits: [
+                        "Rational and restrained, good at weighing pros and cons",
+                        "Finding balance between compromise and resistance",
+                        "Focusing on self-protection",
+                        "Skilled at surviving within rule frameworks"
+                    ]
+                },
+                B: {
+                    name: "Helly R.",
+                    description: "You can sever memories, but you cannot sever humanity!",
+                    traits: [
+                        "Extremely sensitive to injustice",
+                        "Daring to face truth",
+                        "Pursuing justice and transparency",
+                        "Refusing to be bound by systems"
+                    ]
+                },
+                C: {
+                    name: "Dylan G.",
+                    description: "You can sever memories, but you cannot sever humanity!",
+                    traits: [
+                        "Loyal and righteous",
+                        "Willing to sacrifice for others",
+                        "Moral sense above obedience",
+                        "Valuing relationships"
+                    ]
+                },
+                D: {
+                    name: "Irving B.",
+                    description: "You can sever memories, but you cannot sever humanity!",
+                    traits: [
+                        "Skilled at observation and reflection",
+                        "Expressing stance through gentle means",
+                        "Defending human dignity",
+                        "Avoiding direct conflict"
+                    ]
+                }
+            }
+        };
+
+        function toggleLanguage(button) {
+            if (button.textContent === 'CN') {
+                button.textContent = 'EN';
+                document.getElementById('visitorPrefix').textContent = texts.en.visitorPrefix;
+                document.getElementById('visitorStatus').textContent = texts.en.visitorStatus;
+                currentLanguage = 'en';
+            } else {
+                button.textContent = 'CN';
+                document.getElementById('visitorPrefix').textContent = texts.cn.visitorPrefix;
+                document.getElementById('visitorStatus').textContent = texts.cn.visitorStatus;
+                currentLanguage = 'cn';
+            }
+            // 重新生成报告
+            generateReport();
+        }
+
+        function downloadReport() {
+            // TODO: 实现下载报告功能
+            console.log('Downloading report...');
+        }
+
+        function retakeTest() {
+            window.location.href = 'index.html';
+        }
+
+        // 从 URL 参数获取答案并生成报告
+        function generateReport() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const answers = urlParams.get('answers');
+            
+            if (!answers) {
+                window.location.href = 'quiz.html';
+                return;
+            }
+
+            // 计算每个选项的出现次数
+            const answerCounts = {
+                A: 0,
+                B: 0,
+                C: 0,
+                D: 0
+            };
+
+            for (let answer of answers) {
+                answerCounts[answer]++;
+            }
+
+            // 找出出现次数最多的选项
+            let dominantAnswer = 'A';
+            let maxCount = answerCounts.A;
+            for (let answer in answerCounts) {
+                if (answerCounts[answer] > maxCount) {
+                    maxCount = answerCounts[answer];
+                    dominantAnswer = answer;
+                }
+            }
+
+            // 获取对应的角色分析
+            const role = roleAnalysis[currentLanguage][dominantAnswer];
+            // 根据角色选择对应的图片
+            const characterImages = {
+                'A': 'character1.png',
+                'B': 'character2.png',
+                'C': 'character3.png',
+                'D': 'character4.png'
+            };
+
+            // 生成报告内容
+            const reportContent = `
+                <div class="report-header">
+                    <img src="images/lumon-logo-filled.svg" alt="Lumon Logo">
+                    <div class="copyright">COPYRIGHT LUMON INDUSTRIES, INC.</div>
+                </div>
+                <div class="report-title">
+                    <span>Employee Personality Assessment #${generateVisitorId()}</span>
+                </div>
+                <div class="report-content">
+                    <div class="role-image">
+                        <img src="images/${characterImages[dominantAnswer]}" alt="${role.name}">
+                    </div>
+                    <div class="role-text">
+                        <h2>${role.name}</h2>
+                        <p>${role.description}</p>
+                        <div>
+                            <div class="report-details">
+                                <p>■ 主导人格：${role.name}</p>
+                                <p>■ 匹配度：87%</p>
+                                <p>■ 污染指数：■■■■□ 78%</p>
+                                <p>■ 核心特质：✓ 记忆完整性敏感 ✓ 用艺术表达不安</p>
+                                <p>■ Lumon处置建议：✓ 立即终止档案访问权限 ✓ 安排每周3次记忆校准</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('resultContent').innerHTML = reportContent;
+        }
+
+        // 页面加载时生成报告
+        generateReport();
+    </script>
+</body>
+</html> 

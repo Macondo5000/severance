@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUMON记忆切割评估系统 - 测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+            background-color: #BEDEE3;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1160px 1fr;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+            gap: 0;
+            position: relative;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* 垂直分割线 */
+        .vertical-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background-color: #0D242E;
+            z-index: 2;
+        }
+
+        .vertical-divider-1 {
+            left: calc((100% - 1160px) / 2);
+        }
+
+        .vertical-divider-2 {
+            right: calc((100% - 1160px) / 2);
+        }
+
+        /* 水平分割线 */
+        .horizontal-divider {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #0D242E;
+            z-index: 2;
+        }
+
+        .horizontal-divider-1 {
+            top: 80px;
+        }
+
+        .horizontal-divider-2 {
+            bottom: 80px;
+        }
+
+        /* 分割线交叉点的小方块 */
+        .divider-square {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #0D242E;
+            z-index: 3;
+        }
+
+        /* 左上角的方块 */
+        .square-top-left {
+            top: 75px;
+            left: calc((100% - 1160px) / 2 - 5px);
+        }
+
+        /* 右上角的方块 */
+        .square-top-right {
+            top: 75px;
+            right: calc((100% - 1160px) / 2 - 5px);
+        }
+
+        /* 左下角的方块 */
+        .square-bottom-left {
+            bottom: 75px;
+            left: calc((100% - 1160px) / 2 - 5px);
+        }
+
+        /* 右下角的方块 */
+        .square-bottom-right {
+            bottom: 75px;
+            right: calc((100% - 1160px) / 2 - 5px);
+        }
+
+        .header {
+            grid-column: 2;
+            grid-row: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            background-color: #BEDEE3;
+            height: 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .visitor-info {
+            position: absolute;
+            left: 2rem;
+            font-family: monospace;
+            font-size: 12px;
+            color: #0D242E;
+        }
+
+        .visitor-id {
+            font-weight: bold;
+        }
+
+        .visitor-status {
+            color: #666;
+            margin-left: 8px;
+        }
+
+        .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo img {
+            height: 60px;
+            width: auto;
+            filter: brightness(0);
+        }
+
+        .language-selector {
+            position: absolute;
+            right: 2rem;
+        }
+
+        .language-selector button {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 1px solid #0D242E;
+            background: none;
+            color: #0D242E;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .language-selector button:hover {
+            background-color: #0D242E;
+            color: #fff;
+        }
+
+        .main-content {
+            grid-column: 2;
+            grid-row: 2;
+            width: 100%;
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 30px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .quiz-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 120px;
+        }
+
+        .progress-bar {
+            width: 900px;
+            height: 2px;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .progress-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background-color: #0D242E;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            width: 900px;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            color: #0D242E;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 900px;
+        }
+
+        .option-button {
+            padding: 0 20px;
+            background-color: #fff;
+            border: none;
+            border-left: 4px solid #0D242E;
+            color: #0D242E;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            width: 900px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-button:hover {
+            background-color: #0D242E;
+            color: #fff;
+        }
+
+        .option-button.selected {
+            background-color: #0D242E;
+            color: #fff;
+        }
+
+        .footer {
+            grid-column: 2;
+            grid-row: 3;
+            padding: 1rem;
+            background-color: #BEDEE3;
+            height: 80px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            text-align: left;
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        .footer-left p,
+        .footer-right p {
+            font-size: 12px;
+            font-family: monospace;
+            color: #0D242E;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-columns: 20px 1fr 20px;
+            }
+            
+            .vertical-divider-1 {
+                left: 20px;
+            }
+            
+            .vertical-divider-2 {
+                right: 20px;
+            }
+
+            .square-top-left {
+                left: 15px;
+            }
+
+            .square-top-right {
+                right: 15px;
+            }
+
+            .square-bottom-left {
+                left: 15px;
+            }
+
+            .square-bottom-right {
+                right: 15px;
+            }
+
+            .main-content {
+                max-width: 100%;
+                padding: 30px 20px;
+            }
+
+            .quiz-container {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+            }
+
+            .header, .main-content, .footer {
+                grid-column: 1;
+            }
+
+            .vertical-divider-1 {
+                left: 20px;
+            }
+            
+            .vertical-divider-2 {
+                right: 20px;
+            }
+
+            .horizontal-divider-1 {
+                top: 80px;
+            }
+
+            .horizontal-divider-2 {
+                bottom: 80px;
+            }
+
+            .square-top-left {
+                left: 15px;
+            }
+
+            .square-top-right {
+                right: 15px;
+            }
+
+            .square-bottom-left {
+                left: 15px;
+            }
+
+            .square-bottom-right {
+                right: 15px;
+            }
+
+            .language-selector {
+                right: 2.5rem;
+            }
+
+            .question-text {
+                font-size: 1.25rem;
+                padding: 0 16px;
+            }
+
+            .main-content {
+                padding: 30px 16px;
+            }
+
+            .option-button {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <!-- 垂直分割线 -->
+        <div class="vertical-divider vertical-divider-1"></div>
+        <div class="vertical-divider vertical-divider-2"></div>
+
+        <!-- 水平分割线 -->
+        <div class="horizontal-divider horizontal-divider-1"></div>
+        <div class="horizontal-divider horizontal-divider-2"></div>
+
+        <!-- 分割线交叉点的小方块 -->
+        <div class="divider-square square-top-left"></div>
+        <div class="divider-square square-top-right"></div>
+        <div class="divider-square square-bottom-left"></div>
+        <div class="divider-square square-bottom-right"></div>
+
+        <header class="header">
+            <div class="visitor-info">
+                <span class="visitor-id"><span id="visitorPrefix">访客_#</span><span id="visitorNumber"></span></span>
+                <span class="visitor-status">• <span id="visitorStatus">未授权</span></span>
+            </div>
+            <div class="logo">
+                <img src="images/lumon-logo-stroke.svg" alt="Logo">
+            </div>
+            <div class="language-selector">
+                <button onclick="toggleLanguage(this)">CN</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="quiz-container">
+                <div class="question-container">
+                    <h2 class="question-text" id="questionText"></h2>
+                    <div class="options-container" id="optionsContainer"></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-left">
+                <p>Made with love by koko</p>
+            </div>
+            <div class="footer-right">
+                <p>Tools used: Cursor, Deepseek</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 生成随机4位数访客ID
+        function generateVisitorId() {
+            return Math.floor(1000 + Math.random() * 9000);
+        }
+
+        // 设置访客ID
+        document.getElementById('visitorNumber').textContent = generateVisitorId();
+
+        // 问题数据
+        const questions = {
+            cn: [
+                {
+                    question: "当你发现公司存在可疑行为时，你会？",
+                    options: [
+                        { text: "暗中收集证据，但暂时保持沉默", value: "A" },
+                        { text: "立即上报管理层，相信公司流程", value: "B" },
+                        { text: "偷偷告诉最信任的同事一起调查", value: "C" },
+                        { text: "直接当众质问，要求透明化", value: "D" }
+                    ]
+                },
+                {
+                    question: "你理想的工作环境是？",
+                    options: [
+                        { text: "严格遵守规则，职责分明的地方", value: "A" },
+                        { text: "充满神秘感，每天都有新挑战的岗位", value: "B" },
+                        { text: "能和固定搭档形成默契配合的岗位", value: "C" },
+                        { text: "可以随时质疑不合理之处的开放环境", value: "D" }
+                    ]
+                },
+                {
+                    question: "面对记忆切割技术，你更担心？",
+                    options: [
+                        { text: "内外人格产生不可调和的矛盾", value: "A" },
+                        { text: "公司利用记忆缺失操控员工", value: "B" },
+                        { text: "忘记重要的人或承诺", value: "C" },
+                        { text: "这项技术本身就是反人性的", value: "D" }
+                    ]
+                },
+                {
+                    question: "周末突然收到工作消息，你会？",
+                    options: [
+                        { text: "合理就处理，但严格划分回复时间", value: "A" },
+                        { text: "假装没看到，彻底隔绝工作模式", value: "B" },
+                        { text: "纠结要不要回复，怕同事难做", value: "C" },
+                        { text: "愤怒回复质问为什么打扰私人时间", value: "D" }
+                    ]
+                },
+                {
+                    question: "你最能共鸣的职场困境是？",
+                    options: [
+                        { text: "理性上理解制度，情感上无法适应", value: "A" },
+                        { text: "被无法言说的秘密折磨", value: "B" },
+                        { text: "因制度被迫伤害在乎的人", value: "C" },
+                        { text: "清醒地看着所有人被体制异化", value: "D" }
+                    ]
+                }
+            ],
+            en: [
+                {
+                    question: "When you discover suspicious behavior in the company, you would?",
+                    options: [
+                        { text: "Collect evidence secretly but remain silent for now", value: "A" },
+                        { text: "Report to management immediately, trusting company procedures", value: "B" },
+                        { text: "Tell your most trusted colleague to investigate together", value: "C" },
+                        { text: "Confront publicly, demanding transparency", value: "D" }
+                    ]
+                },
+                {
+                    question: "Your ideal work environment is?",
+                    options: [
+                        { text: "A place with strict rules and clear responsibilities", value: "A" },
+                        { text: "A position full of mystery with new challenges daily", value: "B" },
+                        { text: "A role where you can form perfect synergy with a fixed partner", value: "C" },
+                        { text: "An open environment where you can question anything unreasonable", value: "D" }
+                    ]
+                },
+                {
+                    question: "Regarding memory severance technology, you're more concerned about?",
+                    options: [
+                        { text: "Irreconcilable conflicts between inner and outer selves", value: "A" },
+                        { text: "Company manipulating employees through memory gaps", value: "B" },
+                        { text: "Forgetting important people or promises", value: "C" },
+                        { text: "The technology itself being inhumane", value: "D" }
+                    ]
+                },
+                {
+                    question: "When you receive work messages on weekends, you would?",
+                    options: [
+                        { text: "Handle reasonable requests but strictly limit response times", value: "A" },
+                        { text: "Pretend not to see, completely separating work mode", value: "B" },
+                        { text: "Hesitate about responding, worried about colleagues", value: "C" },
+                        { text: "Reply angrily questioning why they're disturbing private time", value: "D" }
+                    ]
+                },
+                {
+                    question: "Which workplace dilemma resonates with you most?",
+                    options: [
+                        { text: "Understanding systems rationally but struggling emotionally", value: "A" },
+                        { text: "Being tortured by unspeakable secrets", value: "B" },
+                        { text: "Being forced to hurt people you care about due to rules", value: "C" },
+                        { text: "Watching everyone being alienated by the system while staying aware", value: "D" }
+                    ]
+                }
+            ]
+        };
+
+        let currentQuestionIndex = 0;
+        let currentLanguage = 'cn';
+        let answers = [];
+
+        // 添加打乱数组的函数
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / questions[currentLanguage].length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        function displayQuestion() {
+            const question = questions[currentLanguage][currentQuestionIndex];
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            const shuffledOptions = shuffleArray(question.options);
+            shuffledOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = option.text;
+                button.onclick = () => handleAnswer(option.value);
+                optionsContainer.appendChild(button);
+            });
+
+            updateProgress();
+        }
+
+        function handleAnswer(answer) {
+            // 立即禁用所有选项，防止重复点击
+            const options = document.querySelectorAll('.option-button');
+            options.forEach(option => option.style.pointerEvents = 'none');
+            
+            // 立即更新答案数组
+            answers.push(answer);
+            
+            // 立即检查是否需要跳转
+            if (currentQuestionIndex < questions[currentLanguage].length - 1) {
+                // 直接跳转到下一题
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                // 直接跳转到结果页面
+                const answersParam = answers.join('');
+                window.location.href = `result.html?answers=${answersParam}`;
+            }
+        }
+
+        function toggleLanguage(button) {
+            if (button.textContent === 'CN') {
+                button.textContent = 'EN';
+                document.getElementById('visitorPrefix').textContent = 'Visitor_#';
+                document.getElementById('visitorStatus').textContent = 'Unauthorized';
+                currentLanguage = 'en';
+            } else {
+                button.textContent = 'CN';
+                document.getElementById('visitorPrefix').textContent = '访客_#';
+                document.getElementById('visitorStatus').textContent = '未授权';
+                currentLanguage = 'cn';
+            }
+            displayQuestion();
+        }
+
+        // 初始显示第一个问题
+        displayQuestion();
+    </script>
+</body>
+</html> 
