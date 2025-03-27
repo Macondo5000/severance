@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <title>LUMON记忆切割评估系统 - 结果</title>
     <style>
         * {
@@ -258,7 +259,23 @@
             background-color: #f5f5f5;
             position: relative;
             overflow: hidden;
-            border-radius: 50%;
+        }
+
+        /* 为不同角色添加不同的裁切形状 */
+        .role-image[data-role="A"] {
+            clip-path: path('M124 0C55.5627 0 0 55.5627 0 124C0 192.437 55.5627 248 124 248C192.437 248 248 192.437 248 124C248 55.5627 192.437 0 124 0Z');
+        }
+
+        .role-image[data-role="B"] {
+            clip-path: path('M0 30C0 13.4315 13.4315 0 30 0H208C224.569 0 238 13.4315 238 30V208C238 224.569 224.569 238 208 238H100C44.7715 238 0 193.228 0 138V30Z');
+        }
+
+        .role-image[data-role="C"] {
+            clip-path: path('M60 0C26.8629 0 0 26.8629 0 60V188C0 221.137 26.8629 248 60 248H100C108.922 248 117.389 246.053 125 242.56C132.611 246.053 141.078 248 150 248H190C223.137 248 250 221.137 250 188V60C250 26.8629 223.137 0 190 0H150C141.078 0 132.611 1.94743 125 5.44042C117.389 1.94743 108.922 0 100 0H60Z');
+        }
+
+        .role-image[data-role="D"] {
+            clip-path: path('M0 60C0 26.8629 26.8629 0 60 0H188C221.137 0 248 26.8629 248 60V188C248 221.137 221.137 248 188 248H60C26.8629 248 0 221.137 0 188V60Z');
         }
 
         .role-image img {
@@ -739,7 +756,7 @@
                     <span>Employee Personality Assessment #${generateVisitorId()}</span>
                 </div>
                 <div class="report-content">
-                    <div class="role-image">
+                    <div class="role-image" data-role="${dominantAnswer}">
                         <img src="images/${characterImages[dominantAnswer]}" alt="${role.name}">
                     </div>
                     <div class="role-text">
