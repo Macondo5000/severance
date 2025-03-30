@@ -859,13 +859,17 @@
                 download: "下载报告",
                 retake: "重新测试",
                 visitorPrefix: "访客_#",
-                visitorStatus: "未授权"
+                visitorStatus: "未授权",
+                footerLeft: "由 <a href=\"https://www.linkedin.com/in/lvling/\" target=\"_blank\">koko</a> 制作 (未获基尔认证)",
+                footerRight: "开发工具: Cursor, Deepseek"
             },
             en: {
                 download: "Download Report",
                 retake: "+ Test Again +",
                 visitorPrefix: "Visitor_#",
-                visitorStatus: "Unauthorized"
+                visitorStatus: "Unauthorized",
+                footerLeft: "Created by <a href=\"https://www.linkedin.com/in/lvling/\" target=\"_blank\">koko</a> (not Kier-approved)",
+                footerRight: "Built with: Cursor & DeepSeek"
             }
         };
 
@@ -960,16 +964,21 @@
         function toggleLanguage(button) {
             if (button.textContent === 'CN') {
                 button.textContent = 'EN';
-                document.getElementById('visitorPrefix').textContent = 'Visitor_#';
-                document.getElementById('visitorStatus').textContent = 'Unauthorized';
+                document.getElementById('visitorPrefix').textContent = texts.en.visitorPrefix;
+                document.getElementById('visitorStatus').textContent = texts.en.visitorStatus;
+                document.querySelector('.action-button.retake').textContent = texts.en.retake;
+                document.querySelector('.footer-left p').innerHTML = texts.en.footerLeft;
+                document.querySelector('.footer-right p').textContent = texts.en.footerRight;
                 currentLanguage = 'en';
             } else {
                 button.textContent = 'CN';
-                document.getElementById('visitorPrefix').textContent = '访客_#';
-                document.getElementById('visitorStatus').textContent = '未授权';
+                document.getElementById('visitorPrefix').textContent = texts.cn.visitorPrefix;
+                document.getElementById('visitorStatus').textContent = texts.cn.visitorStatus;
+                document.querySelector('.action-button.retake').textContent = texts.cn.retake;
+                document.querySelector('.footer-left p').innerHTML = texts.cn.footerLeft;
+                document.querySelector('.footer-right p').textContent = texts.cn.footerRight;
                 currentLanguage = 'cn';
             }
-            // 保存语言偏好并重新生成报告
             localStorage.setItem('preferredLanguage', currentLanguage);
             generateReport();
         }
@@ -1038,16 +1047,16 @@
                 if (langButton) langButton.textContent = 'CN';
                 document.getElementById('visitorPrefix').textContent = '访客_#';
                 document.getElementById('visitorStatus').textContent = '未授权';
-                if (footerLeft) footerLeft.innerHTML = `由 <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> 制作 (未获基尔认证)`;
-                if (footerRight) footerRight.textContent = '开发工具: Cursor, Deepseek';
+                if (footerLeft) footerLeft.innerHTML = texts.cn.footerLeft;
+                if (footerRight) footerRight.textContent = texts.cn.footerRight;
                 if (ogTitleMeta) ogTitleMeta.setAttribute('content', '卢蒙宏观数据精算部人格校准测试');
                 if (ogDescriptionMeta) ogDescriptionMeta.setAttribute('content', '测测你是马克、赫莉、迪伦还是欧文？你的企业人格正在待命。');
             } else { // en
                 if (langButton) langButton.textContent = 'EN';
                 document.getElementById('visitorPrefix').textContent = 'Visitor_#';
                 document.getElementById('visitorStatus').textContent = 'Unauthorized';
-                if (footerLeft) footerLeft.innerHTML = `Created by <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> (not Kier-approved)`;
-                if (footerRight) footerRight.textContent = 'Built with: Cursor & DeepSeek';
+                if (footerLeft) footerLeft.innerHTML = texts.en.footerLeft;
+                if (footerRight) footerRight.textContent = texts.en.footerRight;
                 if (ogTitleMeta) ogTitleMeta.setAttribute('content', 'Lumon MDR Personality Alignment Assessment');
                 if (ogDescriptionMeta) ogDescriptionMeta.setAttribute('content', 'Discover which Macrodata Refinement employee you are — Mark, Helly, Dylan or Irving. Your severed self awaits.');
             }
