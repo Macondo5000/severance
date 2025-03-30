@@ -785,10 +785,10 @@
 
         <footer class="footer">
             <div class="footer-left">
-                <p>Made with love by <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a></p>
+                <p>Created by <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> (not Kier-approved)</p>
             </div>
             <div class="footer-right">
-                <p>Tools used: Cursor, Deepseek</p>
+                <p>Built with: Cursor & DeepSeek</p>
             </div>
         </footer>
     </div>
@@ -1111,6 +1111,10 @@
                     dominantAnswer = answer;
                 }
             }
+
+            // 根据 dominantAnswer 设置对应的预览图 URL
+            const shareImageUrl = `https://lumonindustries.netlify.app/images/${dominantAnswer.toLowerCase()}-share.jpg`;
+            document.getElementById('ogImage').setAttribute('content', shareImageUrl);
 
             // 获取对应的角色分析
             const role = roleAnalysis[currentLanguage][dominantAnswer];
