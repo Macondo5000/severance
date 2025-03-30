@@ -1014,9 +1014,49 @@
         const shareLinkedInLink = document.getElementById('shareLinkedIn');
         const shareXLink = document.getElementById('shareX');
 
+        // Define the base URL for the deployed site
+        const baseUrl = "https://lumonindustries.netlify.app/";
+
+        // Function to update Open Graph and other UI elements based on language
+        function updateUIForLanguage() {
+            const langButton = document.querySelector('.language-selector button');
+            const footerLeft = document.getElementById('footer-left-text');
+            const footerRight = document.getElementById('footer-right-text');
+            const ogTitleMeta = document.getElementById('ogTitle');
+            const ogDescriptionMeta = document.getElementById('ogDescription');
+            const ogUrlMeta = document.getElementById('ogUrl');
+            const ogImageMeta = document.getElementById('ogImage'); 
+
+            // Construct the full public URL for the current result page
+            const publicResultUrl = baseUrl + "result.html" + window.location.search;
+            
+            // Set canonical URL and Image using the public URL
+            if (ogUrlMeta) ogUrlMeta.setAttribute('content', publicResultUrl);
+            if (ogImageMeta) ogImageMeta.setAttribute('content', 'https://i.ibb.co/kVXZ2yWW/share.png'); 
+
+            if (currentLanguage === 'cn') {
+                if (langButton) langButton.textContent = 'CN';
+                document.getElementById('visitorPrefix').textContent = '访客_#';
+                document.getElementById('visitorStatus').textContent = '未授权';
+                if (footerLeft) footerLeft.innerHTML = `由 <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> 制作 (未获基尔认证)`;
+                if (footerRight) footerRight.textContent = '开发工具: Cursor, Deepseek';
+                if (ogTitleMeta) ogTitleMeta.setAttribute('content', '卢蒙宏观数据精算部人格校准测试');
+                if (ogDescriptionMeta) ogDescriptionMeta.setAttribute('content', '测测你是马克、赫莉、迪伦还是欧文？你的企业人格正在待命。');
+            } else { // en
+                if (langButton) langButton.textContent = 'EN';
+                document.getElementById('visitorPrefix').textContent = 'Visitor_#';
+                document.getElementById('visitorStatus').textContent = 'Unauthorized';
+                if (footerLeft) footerLeft.innerHTML = `Created by <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> (not Kier-approved)`;
+                if (footerRight) footerRight.textContent = 'Built with: Cursor & DeepSeek';
+                if (ogTitleMeta) ogTitleMeta.setAttribute('content', 'Lumon MDR Personality Alignment Assessment');
+                if (ogDescriptionMeta) ogDescriptionMeta.setAttribute('content', 'Discover which Macrodata Refinement employee you are — Mark, Helly, Dylan or Irving. Your severed self awaits.');
+            }
+        }
+
         // Function to prepare and SHOW share links popup
         function prepareShareLinks() {
-            const pageUrl = window.location.href;
+            // Construct the full public URL for the current result page
+            const pageUrl = baseUrl + "result.html" + window.location.search;
             const pageTitle = document.getElementById('ogTitle')?.getAttribute('content') || document.title;
 
             const encodedUrl = encodeURIComponent(pageUrl);
@@ -1025,11 +1065,9 @@
             const linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
             const xShareUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
 
-            // Set the href attributes for the popup links
             if (shareLinkedInLink) shareLinkedInLink.href = linkedinShareUrl;
             if (shareXLink) shareXLink.href = xShareUrl;
 
-            // Show the popup
             if (sharePopup) sharePopup.style.display = 'flex'; 
         }
 
@@ -1271,37 +1309,6 @@
             }
             reportContentElement.innerHTML = reportContent;
             updateUIForLanguage(); 
-        }
-
-        function updateUIForLanguage() {
-            const langButton = document.querySelector('.language-selector button');
-            const footerLeft = document.getElementById('footer-left-text');
-            const footerRight = document.getElementById('footer-right-text');
-            const ogTitleMeta = document.getElementById('ogTitle');
-            const ogDescriptionMeta = document.getElementById('ogDescription');
-            const ogUrlMeta = document.getElementById('ogUrl');
-            const ogImageMeta = document.getElementById('ogImage'); 
-
-            if (ogUrlMeta) ogUrlMeta.setAttribute('content', window.location.href);
-            if (ogImageMeta) ogImageMeta.setAttribute('content', 'https://i.ibb.co/kVXZ2yWW/share.png'); 
-
-            if (currentLanguage === 'cn') {
-                if (langButton) langButton.textContent = 'CN';
-                document.getElementById('visitorPrefix').textContent = '访客_#';
-                document.getElementById('visitorStatus').textContent = '未授权';
-                if (footerLeft) footerLeft.innerHTML = `由 <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> 制作 (未获基尔认证)`;
-                if (footerRight) footerRight.textContent = '开发工具: Cursor, Deepseek';
-                if (ogTitleMeta) ogTitleMeta.setAttribute('content', '卢蒙宏观数据精算部人格校准测试');
-                if (ogDescriptionMeta) ogDescriptionMeta.setAttribute('content', '测测你是马克、赫莉、迪伦还是欧文？你的企业人格正在待命。');
-            } else { // en
-                if (langButton) langButton.textContent = 'EN';
-                document.getElementById('visitorPrefix').textContent = 'Visitor_#';
-                document.getElementById('visitorStatus').textContent = 'Unauthorized';
-                if (footerLeft) footerLeft.innerHTML = `Created by <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> (not Kier-approved)`;
-                if (footerRight) footerRight.textContent = 'Built with: Cursor & DeepSeek';
-                if (ogTitleMeta) ogTitleMeta.setAttribute('content', 'Lumon MDR Personality Alignment Assessment');
-                if (ogDescriptionMeta) ogDescriptionMeta.setAttribute('content', 'Discover which Macrodata Refinement employee you are — Mark, Helly, Dylan or Irving. Your severed self awaits.');
-            }
         }
     </script>
 </body>
