@@ -157,11 +157,51 @@
             font-size: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-family: monospace;
         }
 
         .language-selector button:hover {
             background-color: #0D242E;
             color: #fff;
+        }
+
+        .volume-control {
+            position: absolute;
+            right: 4.5rem;
+        }
+
+        .volume-control button {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 1px solid #0D242E;
+            background: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+        }
+
+        .volume-control button:hover {
+            background-color: #0D242E;
+        }
+
+        .volume-control button:hover img {
+            filter: invert(1);
+        }
+
+        .volume-control img {
+            width: 16px;
+            height: 16px;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .volume-control {
+                right: 5rem;
+            }
         }
 
         .main-content {
@@ -216,6 +256,7 @@
             color: #0D242E;
             margin-bottom: 30px;
             line-height: 1.4;
+            font-family: "Helvetica Neue", Arial, sans-serif;
         }
 
         .options-container {
@@ -231,7 +272,7 @@
             border: none;
             border-left: 4px solid #0D242E;
             color: #0D242E;
-            font-size: 0.9rem;
+            font-size: 0.7rem;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: left;
@@ -239,6 +280,7 @@
             height: 42px;
             display: flex;
             align-items: center;
+            font-family: monospace;
         }
 
         .option-button:hover {
@@ -277,6 +319,12 @@
             font-size: 12px;
             font-family: monospace;
             color: #0D242E;
+        }
+
+        /* Ensure footer link is underlined */
+        .footer-left p a {
+            color: inherit; /* Keep the same color as surrounding text */
+            text-decoration: underline; 
         }
 
         /* 响应式设计 */
@@ -399,14 +447,19 @@
 
         <header class="header">
             <div class="visitor-info">
-                <span class="visitor-id"><span id="visitorPrefix">访客_#</span><span id="visitorNumber"></span></span>
-                <span class="visitor-status">• <span id="visitorStatus">未授权</span></span>
+                <span class="visitor-id"><span id="visitorPrefix">Visitor_#</span><span id="visitorNumber"></span></span>
+                <span class="visitor-status">• <span id="visitorStatus">Unauthorized</span></span>
             </div>
             <div class="logo">
                 <img src="images/lumon-logo-stroke.svg" alt="Logo">
             </div>
             <div class="language-selector">
-                <button onclick="toggleLanguage(this)">CN</button>
+                <button onclick="toggleLanguage(this)">EN</button>
+            </div>
+            <div class="volume-control">
+                <button onclick="toggleVolume(this)">
+                    <img src="images/volume-on.svg" alt="Volume" id="volumeIcon">
+                </button>
             </div>
         </header>
 
@@ -424,22 +477,41 @@
 
         <footer class="footer">
             <div class="footer-left">
-                <p>Made with love by koko</p>
+                <p id="footer-left-text">Created by <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> (not Kier-approved)</p>
             </div>
             <div class="footer-right">
-                <p>Tools used: Cursor, Deepseek</p>
+                <p id="footer-right-text">Built with: Cursor & DeepSeek</p>
             </div>
         </footer>
     </div>
 
+    <!-- 添加音频元素 -->
+    <audio id="optionSound">
+        <source src="audio/option-select.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
-        // 生成随机4位数访客ID
-        function generateVisitorId() {
-            return Math.floor(1000 + Math.random() * 9000);
+        // 音频控制
+        const optionSound = document.getElementById('optionSound');
+        let isMuted = localStorage.getItem('soundEnabled') === 'false';
+        
+        // 更新音频状态
+        function updateAudioState() {
+            const volumeIcon = document.getElementById('volumeIcon');
+            if (volumeIcon) {
+                volumeIcon.src = isMuted ? 'images/volume-off.svg' : 'images/volume-on.svg';
+            }
+            if (optionSound) {
+                optionSound.muted = isMuted;
+            }
         }
 
-        // 设置访客ID
-        document.getElementById('visitorNumber').textContent = generateVisitorId();
+        // 音量控制功能
+        function toggleVolume(button) {
+            isMuted = !isMuted;
+            localStorage.setItem('soundEnabled', !isMuted);
+            updateAudioState();
+        }
 
         // 问题数据
         const questions = {
@@ -540,7 +612,7 @@
         };
 
         let currentQuestionIndex = 0;
-        let currentLanguage = 'cn';
+        let currentLanguage = 'en';
         let answers = [];
 
         // 添加打乱数组的函数
@@ -569,50 +641,106 @@
                 const button = document.createElement('button');
                 button.className = 'option-button';
                 button.textContent = option.text;
-                button.onclick = () => handleAnswer(option.value);
+                button.value = option.value;
+                
+                // 使用事件监听器绑定点击事件
+                button.addEventListener('click', (e) => {
+                    // 播放音效（只播放前1秒）
+                    optionSound.currentTime = 0;
+                    optionSound.play().catch(error => console.log("Option sound failed:", error));
+                    
+                    // 1秒后停止音效
+                    setTimeout(() => {
+                        optionSound.pause();
+                        optionSound.currentTime = 0;
+                    }, 1000);
+                    
+                    // 等待音效播放完成后再处理选项
+                    setTimeout(() => {
+                        handleOptionClick(e);
+                    }, 300);
+                });
+                
                 optionsContainer.appendChild(button);
             });
 
             updateProgress();
         }
 
-        function handleAnswer(answer) {
-            // 立即禁用所有选项，防止重复点击
-            const options = document.querySelectorAll('.option-button');
-            options.forEach(option => option.style.pointerEvents = 'none');
+        // 处理选项点击
+        function handleOptionClick(e) {
+            const selectedOption = e.target;
+            const selectedValue = selectedOption.value;
             
-            // 立即更新答案数组
-            answers.push(answer);
+            // 保存答案
+            answers.push(selectedValue);
             
-            // 立即检查是否需要跳转
+            // 更新进度
+            updateProgress();
+            
+            // 检查是否完成所有问题
             if (currentQuestionIndex < questions[currentLanguage].length - 1) {
-                // 直接跳转到下一题
-                currentQuestionIndex++;
-                displayQuestion();
+                // 延迟显示下一题
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    displayQuestion();
+                }, 300);
             } else {
-                // 直接跳转到结果页面
-                const answersParam = answers.join('');
-                window.location.href = `result.html?answers=${answersParam}`;
+                // 完成测试，跳转到结果页面
+                setTimeout(() => {
+                    const answersParam = answers.join('');
+                    window.location.href = `result.html?answers=${answersParam}`;
+                }, 300);
+            }
+        }
+
+        // 生成随机4位数访客ID
+        function generateVisitorId() {
+            return Math.floor(1000 + Math.random() * 9000);
+        }
+
+        // 设置访客ID
+        document.getElementById('visitorNumber').textContent = generateVisitorId();
+
+        // 更新页眉和页脚文本
+        function updateUIForLanguage() {
+            const footerLeft = document.getElementById('footer-left-text');
+            const footerRight = document.getElementById('footer-right-text');
+            const langButton = document.querySelector('.language-selector button');
+
+            if (currentLanguage === 'cn') {
+                langButton.textContent = 'CN';
+                document.getElementById('visitorPrefix').textContent = '访客_#';
+                document.getElementById('visitorStatus').textContent = '未授权';
+                footerLeft.innerHTML = `由 <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> 制作 (未获基尔认证)`;
+                footerRight.textContent = '开发工具: Cursor, Deepseek';
+            } else { // en
+                langButton.textContent = 'EN';
+                document.getElementById('visitorPrefix').textContent = 'Visitor_#';
+                document.getElementById('visitorStatus').textContent = 'Unauthorized';
+                footerLeft.innerHTML = `Created by <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> (not Kier-approved)`;
+                footerRight.textContent = 'Built with: Cursor & DeepSeek';
             }
         }
 
         function toggleLanguage(button) {
-            if (button.textContent === 'CN') {
-                button.textContent = 'EN';
-                document.getElementById('visitorPrefix').textContent = 'Visitor_#';
-                document.getElementById('visitorStatus').textContent = 'Unauthorized';
-                currentLanguage = 'en';
-            } else {
-                button.textContent = 'CN';
-                document.getElementById('visitorPrefix').textContent = '访客_#';
-                document.getElementById('visitorStatus').textContent = '未授权';
-                currentLanguage = 'cn';
-            }
+            currentLanguage = (button.textContent === 'EN') ? 'cn' : 'en';
+            localStorage.setItem('preferredLanguage', currentLanguage);
+            updateUIForLanguage();
             displayQuestion();
         }
 
         // 初始显示第一个问题
+        // 读取保存的语言设置
+        currentLanguage = localStorage.getItem('preferredLanguage') || 'en'; 
+        
+        // 设置初始UI状态（包括页脚）
+        updateUIForLanguage();
+        
         displayQuestion();
+        
+        // 初始化音量状态
+        updateAudioState();
     </script>
 </body>
 </html> 

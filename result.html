@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="images/favicon.png">
     <title>LUMON记忆切割评估系统 - 结果</title>
+    <!-- Open Graph Meta Tags -->
+    <meta id="ogType" property="og:type" content="website" />
+    <meta id="ogUrl" property="og:url" content="" /> 
+    <meta id="ogTitle" property="og:title" content="" />
+    <meta id="ogDescription" property="og:description" content="" />
+    <meta id="ogImage" property="og:image" content="https://i.ibb.co/kVXZ2yWW/share.png" /> 
     <style>
         * {
             margin: 0;
@@ -158,11 +164,51 @@
             font-size: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-family: monospace;
         }
 
         .language-selector button:hover {
             background-color: #0D242E;
             color: #fff;
+        }
+
+        .volume-control {
+            position: absolute;
+            right: 4.5rem;
+        }
+
+        .volume-control button {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 1px solid #0D242E;
+            background: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+        }
+
+        .volume-control button:hover {
+            background-color: #0D242E;
+        }
+
+        .volume-control button:hover img {
+            filter: invert(1);
+        }
+
+        .volume-control img {
+            width: 16px;
+            height: 16px;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .volume-control {
+                right: 5rem;
+            }
         }
 
         .main-content {
@@ -210,7 +256,7 @@
         .report-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 20px;
         }
 
@@ -289,19 +335,22 @@
         .role-text {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 0;
             min-width: 0; /* 防止文本溢出 */
         }
 
         .role-text h2 {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            letter-spacing: -0.06em;
+            line-height: 1;
         }
 
         .role-text p {
             font-size: 1rem;
-            line-height: 1.5;
-            margin-bottom: 5px;
+            line-height: 1;
+            margin-bottom: 3px;
         }
 
         .role-text ul {
@@ -333,6 +382,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: monospace;
         }
 
         .action-button:hover {
@@ -376,6 +426,22 @@
             font-size: 12px;
             font-family: monospace;
             color: #0D242E;
+        }
+
+        /* Ensure footer link is underlined */
+        .footer-left p a {
+            color: inherit; /* Keep the same color as surrounding text */
+            text-decoration: underline; 
+        }
+
+        /* Style for report header copyright text */
+        .report-footer p { /* Targeting the paragraphs inside .report-footer */
+            font-family: monospace; /* Match footer font */
+            font-size: 10px; /* Smaller font size */
+            color: #0D242E; /* Assuming same color */
+            line-height: 1.2; /* Adjust line height if needed */
+            margin-bottom: 2px; /* Small margin between lines */
+            text-align: right; /* Align to the right */
         }
 
         /* 响应式设计 */
@@ -484,6 +550,25 @@
             .action-button {
                 width: 100%;
             }
+
+            .report-content {
+                grid-template-columns: 1fr; /* Stack image and text vertically */
+                gap: 20px; /* Adjust gap for stacked layout */
+                padding: 20px; /* Match overall padding */
+                width: 100%; /* Ensure it takes full width */
+            }
+
+            .role-image {
+                justify-self: center; /* Center the image */
+                margin-bottom: 20px; /* Add space below image */
+                width: 200px; /* Slightly smaller image on mobile */
+                height: 200px;
+            }
+
+            .details-columns {
+                grid-template-columns: 1fr; /* Stack detail columns */
+                gap: 15px; /* Adjust gap between stacked columns */
+            }
         }
 
         .report-details {
@@ -513,7 +598,6 @@
         }
 
         .report-footer {
-            margin-top: 20px;
             text-align: right;
             font-size: 0.7rem;
             color: #666;
@@ -521,6 +605,130 @@
 
         .report-footer p {
             margin-bottom: 2px;
+        }
+
+        .character-name {
+            font-size: 2.5rem;
+            color: #0D242E;
+            margin-bottom: 10px;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            letter-spacing: -0.06em;
+            line-height: 1;
+        }
+
+        .character-title {
+            font-size: 0.8rem;
+            color: #0D242E;
+            margin-bottom: 0;
+            font-family: monospace;
+            opacity: 0.8;
+            line-height: 1;
+        }
+
+        /* Styles for Dylan G., Helly R., Mark S. & Irving B. details */
+        .dylan-details p,
+        .helly-details p,
+        .mark-details p,
+        .irving-details p {
+            font-family: monospace;
+            font-size: 0.8rem; /* Smaller font size */
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        /* Style for the role description paragraph */
+        .role-text p.role-description { /* Increased specificity */
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            font-weight: bold;
+            font-size: 1.2rem; /* Set desired size */
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+
+        /* Two-column layout for details */
+        .details-columns {
+            display: grid; /* Using grid for potentially better alignment control */
+            grid-template-columns: 2fr 3fr; /* Unequal columns: Left takes 2 parts, Right takes 3 */
+            gap: 20px; /* Adjust gap between columns as needed */
+        }
+
+        .details-column {
+            /* No specific styles needed for the column div itself for now */
+        }
+
+        /* Keep the font styles for paragraphs within the columns */
+        .dylan-details .details-column p,
+        .helly-details .details-column p,
+        .mark-details .details-column p,
+        .irving-details .details-column p {
+            font-family: monospace;
+            font-size: 0.8rem;
+            line-height: 1;
+            margin-bottom: 4px;
+            text-align: left; /* Ensure left alignment */
+        }
+
+        .detail-group-header {
+            margin-top: 1em; /* Add space above these headers */
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        /* Share Popup Styles */
+        .share-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 30px 40px;
+            border: 1px solid #0D242E;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001; /* Ensure it's above other content */
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            font-family: monospace;
+            min-width: 250px;
+        }
+
+        .share-popup h3 {
+            margin: 0 0 15px 0;
+            color: #0D242E;
+            font-size: 1.1rem;
+        }
+
+        .share-options a {
+            display: inline-block;
+            margin: 0 10px;
+            text-decoration: none;
+            color: #0D242E;
+            font-size: 1rem;
+            padding: 8px 15px;
+            border: 1px solid #0D242E;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .share-options a:hover {
+            background-color: #0D242E;
+            color: #fff;
+        }
+
+        .close-popup-btn {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: #aaa;
+            line-height: 1;
+            padding: 0;
+        }
+        .close-popup-btn:hover {
+            color: #0D242E;
         }
     </style>
 </head>
@@ -542,32 +750,42 @@
 
         <header class="header">
             <div class="visitor-info">
-                <span class="visitor-id"><span id="visitorPrefix">访客_#</span><span id="visitorNumber"></span></span>
-                <span class="visitor-status">• <span id="visitorStatus">未授权</span></span>
+                <span class="visitor-id"><span id="visitorPrefix">Visitor_#</span><span id="visitorNumber"></span></span>
+                <span class="visitor-status">• <span id="visitorStatus">Unauthorized</span></span>
             </div>
             <div class="logo">
                 <img src="images/lumon-logo-stroke.svg" alt="Logo">
             </div>
             <div class="language-selector">
-                <button onclick="toggleLanguage(this)">CN</button>
+                <button onclick="toggleLanguage(this)">EN</button>
+            </div>
+            <div class="volume-control">
+                <button onclick="toggleVolume(this)">
+                    <img src="images/volume-on.svg" alt="Volume" id="volumeIcon">
+                </button>
             </div>
         </header>
 
+        <!-- 添加音频元素 -->
+        <audio id="reportSound">
+            <source src="audio/report-generate.mp3" type="audio/mpeg">
+        </audio>
+
         <main class="main-content">
             <div class="result-container">
-                <div class="result-content" id="resultContent">
+                <div class="result-content" id="reportContent">
                     <!-- 结果内容将通过 JavaScript 动态生成 -->
                 </div>
                 <div class="button-container">
-                    <button class="action-button" onclick="downloadReport()">下载报告</button>
-                    <button class="action-button retake" onclick="retakeTest()">重新测试</button>
+                    <button class="action-button retake" onclick="retakeTest()">RETRY</button>
+                    <button class="action-button" onclick="prepareShareLinks()">SHARE</button>
                 </div>
             </div>
         </main>
 
         <footer class="footer">
             <div class="footer-left">
-                <p>Made with love by koko</p>
+                <p>Made with love by <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a></p>
             </div>
             <div class="footer-right">
                 <p>Tools used: Cursor, Deepseek</p>
@@ -575,7 +793,58 @@
         </footer>
     </div>
 
+    <!-- Share Popup HTML (Add this structure right before the closing </body> tag) -->
+    <div id="sharePopup" class="share-popup">
+        <button class="close-popup-btn" onclick="closeSharePopup()">&times;</button>
+        <h3>SHARE TO</h3>
+        <div class="share-options">
+            <a id="shareLinkedIn" href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a id="shareX" href="#" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
+        </div>
+    </div>
+
     <script>
+        // 音频控制
+        const reportSound = document.getElementById('reportSound');
+        let isMuted = localStorage.getItem('soundEnabled') === 'false';
+        let currentLanguage = 'en';
+        let answers = '';
+
+        // 音量控制功能
+        function toggleVolume(button) {
+            isMuted = !isMuted;
+            localStorage.setItem('soundEnabled', !isMuted);
+            const volumeIcon = document.getElementById('volumeIcon');
+            
+            if (volumeIcon) {
+                volumeIcon.src = isMuted ? 'images/volume-off.svg' : 'images/volume-on.svg';
+            }
+            
+            if (reportSound) {
+                reportSound.muted = isMuted;
+            }
+        }
+
+        // 页面加载时播放报告生成音效
+        window.addEventListener('load', () => {
+            const savedMuteState = localStorage.getItem('soundEnabled');
+            const isMuted = savedMuteState === 'false';
+            
+            // 更新音量图标
+            const volumeIcon = document.getElementById('volumeIcon');
+            if (volumeIcon) {
+                volumeIcon.src = isMuted ? 'images/volume-off.svg' : 'images/volume-on.svg';
+            }
+            
+            // 设置音频静音状态
+            reportSound.muted = isMuted;
+            
+            // 播放报告生成音效
+            if (!isMuted) {
+                reportSound.play().catch(error => console.log("Report sound failed:", error));
+            }
+        });
+
         // 生成随机4位数访客ID
         function generateVisitorId() {
             return Math.floor(1000 + Math.random() * 9000);
@@ -600,14 +869,12 @@
             }
         };
 
-        let currentLanguage = 'cn';
-
         // 角色分析数据
         const roleAnalysis = {
             cn: {
                 A: {
                     name: "马克·S",
-                    description: "你们切得开记忆，切不开人性！",
+                    description: "“如果我不想成为外面的那个他呢？”",
                     traits: [
                         "理性克制，善于权衡利弊",
                         "在妥协与反抗间寻找平衡",
@@ -617,7 +884,7 @@
                 },
                 B: {
                     name: "赫莉·R",
-                    description: "你们切得开记忆，切不开人性！",
+                    description: "“我是人！而你不是！”",
                     traits: [
                         "对不公极度敏感",
                         "敢于直面真相",
@@ -627,7 +894,7 @@
                 },
                 C: {
                     name: "迪伦·G",
-                    description: "你们切得开记忆，切不开人性！",
+                    description: "“老子他妈的一直撑着门！”",
                     traits: [
                         "重情重义",
                         "愿意为他人付出",
@@ -637,7 +904,7 @@
                 },
                 D: {
                     name: "欧文·B",
-                    description: "你们切得开记忆，切不开人性！",
+                    description: "“你不是人，你只是卢蒙的零件”",
                     traits: [
                         "善于观察和思考",
                         "用温和方式表达立场",
@@ -649,7 +916,7 @@
             en: {
                 A: {
                     name: "Mark S.",
-                    description: "You can sever memories, but you cannot sever humanity!",
+                    description: "“What if I don't want to be him when I go out there?”",
                     traits: [
                         "Rational and restrained, good at weighing pros and cons",
                         "Finding balance between compromise and resistance",
@@ -659,7 +926,7 @@
                 },
                 B: {
                     name: "Helly R.",
-                    description: "You can sever memories, but you cannot sever humanity!",
+                    description: "“I'm a person! You're not!”",
                     traits: [
                         "Extremely sensitive to injustice",
                         "Daring to face truth",
@@ -669,7 +936,7 @@
                 },
                 C: {
                     name: "Dylan G.",
-                    description: "You can sever memories, but you cannot sever humanity!",
+                    description: "“I held the fucking door!”",
                     traits: [
                         "Loyal and righteous",
                         "Willing to sacrifice for others",
@@ -679,7 +946,7 @@
                 },
                 D: {
                     name: "Irving B.",
-                    description: "You can sever memories, but you cannot sever humanity!",
+                    description: "“YOU'RE NOT A PERSON. YOU'RE JUST A PART OF LUMON.”",
                     traits: [
                         "Skilled at observation and reflection",
                         "Expressing stance through gentle means",
@@ -693,22 +960,82 @@
         function toggleLanguage(button) {
             if (button.textContent === 'CN') {
                 button.textContent = 'EN';
-                document.getElementById('visitorPrefix').textContent = texts.en.visitorPrefix;
-                document.getElementById('visitorStatus').textContent = texts.en.visitorStatus;
+                document.getElementById('visitorPrefix').textContent = 'Visitor_#';
+                document.getElementById('visitorStatus').textContent = 'Unauthorized';
                 currentLanguage = 'en';
             } else {
                 button.textContent = 'CN';
-                document.getElementById('visitorPrefix').textContent = texts.cn.visitorPrefix;
-                document.getElementById('visitorStatus').textContent = texts.cn.visitorStatus;
+                document.getElementById('visitorPrefix').textContent = '访客_#';
+                document.getElementById('visitorStatus').textContent = '未授权';
                 currentLanguage = 'cn';
             }
-            // 重新生成报告
+            // 保存语言偏好并重新生成报告
+            localStorage.setItem('preferredLanguage', currentLanguage);
             generateReport();
         }
 
-        function downloadReport() {
-            // TODO: 实现下载报告功能
-            console.log('Downloading report...');
+        // 页面加载时执行
+        window.addEventListener('DOMContentLoaded', (event) => {
+            // 读取保存的语言设置
+            currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+            
+            // 设置初始语言按钮状态和访客信息
+            const langButton = document.querySelector('.language-selector button');
+            if (langButton) {
+                if (currentLanguage === 'cn') {
+                    langButton.textContent = 'CN';
+                    document.getElementById('visitorPrefix').textContent = '访客_#';
+                    document.getElementById('visitorStatus').textContent = '未授权';
+                } else {
+                    langButton.textContent = 'EN';
+                    document.getElementById('visitorPrefix').textContent = 'Visitor_#';
+                    document.getElementById('visitorStatus').textContent = 'Unauthorized';
+                }
+            }
+
+            // 解析答案
+            const urlParams = new URLSearchParams(window.location.search);
+            answers = urlParams.get('answers') || '';
+
+            // 生成报告
+            generateReport();
+            
+            // 更新音量状态
+            updateAudioState();
+
+            // 播放报告生成音效（如果未静音）
+            if (!isMuted) {
+                reportSound.currentTime = 0;
+                reportSound.play().catch(error => console.log("Report sound failed:", error));
+            }
+        });
+
+        const sharePopup = document.getElementById('sharePopup');
+        const shareLinkedInLink = document.getElementById('shareLinkedIn');
+        const shareXLink = document.getElementById('shareX');
+
+        // Function to prepare and SHOW share links popup
+        function prepareShareLinks() {
+            const pageUrl = window.location.href;
+            const pageTitle = document.getElementById('ogTitle')?.getAttribute('content') || document.title;
+
+            const encodedUrl = encodeURIComponent(pageUrl);
+            const encodedTitle = encodeURIComponent(pageTitle);
+
+            const linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+            const xShareUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
+
+            // Set the href attributes for the popup links
+            if (shareLinkedInLink) shareLinkedInLink.href = linkedinShareUrl;
+            if (shareXLink) shareXLink.href = xShareUrl;
+
+            // Show the popup
+            if (sharePopup) sharePopup.style.display = 'flex'; 
+        }
+
+        // Function to close the share popup
+        function closeSharePopup() {
+            if (sharePopup) sharePopup.style.display = 'none';
         }
 
         function retakeTest() {
@@ -751,10 +1078,10 @@
             const role = roleAnalysis[currentLanguage][dominantAnswer];
             // 根据角色选择对应的图片
             const characterImages = {
-                'A': 'character1.png',
-                'B': 'character2.png',
-                'C': 'character3.png',
-                'D': 'character4.png'
+                A: 'images/character1.png',
+                B: 'images/character2.png',
+                C: 'images/character4.png',
+                D: 'images/character3.png'
             };
 
             // 生成报告内容
@@ -772,29 +1099,210 @@
                 </div>
                 <div class="report-content">
                     <div class="role-image" data-role="${dominantAnswer}">
-                        <img src="images/${characterImages[dominantAnswer]}" alt="${role.name}">
+                        <img src="${characterImages[dominantAnswer]}" alt="${role.name}">
                     </div>
                     <div class="role-text">
+                        <div class="character-title" id="characterTitle">${currentLanguage === 'cn' ? '您的最优卢蒙身份：' : 'YOUR OPTIMAL LUMON IDENTITY:'}</div>
                         <h2>${role.name}</h2>
-                        <p>${role.description}</p>
-                        <div>
-                            <div class="report-details">
-                                <p>■ 主导人格：${role.name}</p>
-                                <p>■ 匹配度：87%</p>
-                                <p>■ 污染指数：■■■■□ 78%</p>
-                                <p>■ 核心特质：✓ 记忆完整性敏感 ✓ 用艺术表达不安</p>
-                                <p>■ Lumon处置建议：✓ 立即终止档案访问权限 ✓ 安排每周3次记忆校准</p>
-                            </div>
+                        <p class="role-description">${role.description}</p>
+                        <div class="role-details ${dominantAnswer === 'C' || dominantAnswer === 'B' || dominantAnswer === 'A' || dominantAnswer === 'D' ? (dominantAnswer === 'C' ? 'dylan-details' : (dominantAnswer === 'B' ? 'helly-details' : (dominantAnswer === 'A' ? 'mark-details' : 'irving-details'))) : ''}">
+                            ${(dominantAnswer === 'C' || dominantAnswer === 'B' || dominantAnswer === 'A' || dominantAnswer === 'D') ? 
+                                // Specific details for A, B, C or D in two columns
+                                (dominantAnswer === 'C' ? 
+                                    // Dylan G. Details
+                                    (currentLanguage === 'cn' ? `
+                                        <div class="details-columns">
+                                            <div class="details-column details-left">
+                                                <p class="detail-group-header">■ 适配度：</p>
+                                                <p>&nbsp;&nbsp;76%</p> 
+                                                <p class="detail-group-header">■ 核心特质：</p>
+                                                <p> &nbsp;&nbsp;✓ 父爱本能覆盖系统</p>
+                                                <p> &nbsp;&nbsp;✓ 防御性脏话</p>
+                                            </div>
+                                            <div class="details-column details-right">
+                                                <p class="detail-group-header">■ 叛逆指数：</p>
+                                                <p>&nbsp;&nbsp;■■■■□ 82%</p>
+                                                <p class="detail-group-header">■ 卢蒙处置建议：</p>
+                                                <p> &nbsp;&nbsp;✓ \\"卢蒙大家庭\\"宣传片马拉松（40小时）</p>
+                                                <p> &nbsp;&nbsp;✓ 子女记忆抑制注射</p>
+                                            </div>
+                                        </div>
+                                    ` : `
+                                        <div class="details-columns">
+                                            <div class="details-column details-left">
+                                                <p class="detail-group-header">■ COMPATIBILITY:</p>
+                                                <p>&nbsp;&nbsp;76%</p>
+                                                <p class="detail-group-header">■ CORE TRAITS:</p>
+                                                <p> &nbsp;&nbsp;✓ Fatherhood instinct override</p>
+                                                <p> &nbsp;&nbsp;✓ Defensive profanity</p>
+                                            </div>
+                                            <div class="details-column details-right">
+                                                <p class="detail-group-header">■ MEMORY CORRUPTION:</p>
+                                                <p>&nbsp;&nbsp;■■■■□ 82%</p>
+                                                <p class="detail-group-header">■ LUMON COUNTERMEASURES:</p>
+                                                <p> &nbsp;&nbsp;✓ \\"Lumon Family\\" propaganda marathon (40hrs)</p>
+                                                <p> &nbsp;&nbsp;✓ Child memory suppression injections</p>
+                                            </div>
+                                        </div>
+                                    `)
+                                : (dominantAnswer === 'B' ?
+                                    // Helly R. Details
+                                    (currentLanguage === 'cn' ? `
+                                        <div class="details-columns">
+                                            <div class="details-column details-left">
+                                                <p class="detail-group-header">■ 适配度：</p>
+                                                <p>&nbsp;&nbsp;92%</p>
+                                                <p class="detail-group-header">■ 核心特质：</p>
+                                                <p> &nbsp;&nbsp;✓ 自残规程精通</p>
+                                                <p> &nbsp;&nbsp;✓ \\"救命\\"血书创作专精</p>
+                                            </div>
+                                            <div class="details-column details-right">
+                                                <p class="detail-group-header">■ 叛逆指数：</p>
+                                                <p>&nbsp;&nbsp;■■■■■ 98%</p>
+                                                <p class="detail-group-header">■ 卢蒙处置建议：</p>
+                                                <p> &nbsp;&nbsp;✓ 立即永恒区监禁</p>
+                                                <p> &nbsp;&nbsp;✓ 电击服从性条件反射训练</p>
+                                            </div>
+                                        </div>
+                                    ` : `
+                                        <div class="details-columns">
+                                            <div class="details-column details-left">
+                                                <p class="detail-group-header">■ COMPATIBILITY:</p>
+                                                <p>&nbsp;&nbsp;92%</p>
+                                                <p class="detail-group-header">■ CORE TRAITS:</p>
+                                                <p> &nbsp;&nbsp;✓ Self-harm protocol mastery</p>
+                                                <p> &nbsp;&nbsp;✓ \\"HELP\\" blood graffiti proficiency</p>
+                                            </div>
+                                            <div class="details-column details-right">
+                                                <p class="detail-group-header">■ MEMORY CORRUPTION:</p>
+                                                <p>&nbsp;&nbsp;■■■■■ 98%</p>
+                                                <p class="detail-group-header">■ LUMON COUNTERMEASURES:</p>
+                                                <p> &nbsp;&nbsp;✓ Immediate Eternal Zone confinement</p>
+                                                <p> &nbsp;&nbsp;✓ Electroshock obedience conditioning</p>
+                                            </div>
+                                        </div>
+                                    `)
+                                : (dominantAnswer === 'A' ?
+                                    // Mark S. Details
+                                    (currentLanguage === 'cn' ? `
+                                        <div class="details-columns">
+                                            <div class="details-column details-left">
+                                                <p class="detail-group-header">■ 适配度：</p>
+                                                <p>&nbsp;&nbsp;92%</p>
+                                                <p class="detail-group-header">■ 核心特质：</p>
+                                                <p> &nbsp;&nbsp;✓ 愧疚驱动的服从性</p>
+                                                <p> &nbsp;&nbsp;✓ 对赫莉·R的违规保护欲</p>
+                                            </div>
+                                            <div class="details-column details-right">
+                                                <p class="detail-group-header">■ 叛逆指数：</p>
+                                                <p>&nbsp;&nbsp;■■■■□ 78%</p>
+                                                <p class="detail-group-header">■ 卢蒙处置建议：</p>
+                                                <p> &nbsp;&nbsp;✓ 强制每日3次基尔教义诵读 </p>
+                                                <p> &nbsp;&nbsp;✓ 外部分人格丧偶心理咨询（档案#PEGGY-M）</p>
+                                            </div>
+                                        </div>
+                                    ` : `
+                                        <div class="details-columns">
+                                            <div class="details-column details-left">
+                                                <p class="detail-group-header">■ COMPATIBILITY:</p>
+                                                <p>&nbsp;&nbsp;92%</p>
+                                                <p class="detail-group-header">■ CORE TRAITS:</p>
+                                                <p> &nbsp;&nbsp;✓ Guilt-driven compliance</p>  
+                                                <p> &nbsp;&nbsp;✓ Unauthorized protective instincts toward Helly R.</p>
+                                            </div>
+                                            <div class="details-column details-right">
+                                                <p class="detail-group-header">■ MEMORY CORRUPTION:</p>
+                                                <p>&nbsp;&nbsp;■■■■□ 78%</p>
+                                                <p class="detail-group-header">■ LUMON COUNTERMEASURES:</p>
+                                                <p> &nbsp;&nbsp;✓ Mandatory Kier\\'s Doctrine recitation (3x daily)</p> 
+                                                <p> &nbsp;&nbsp;✓ External personality grief counseling (File #PEGGY-M)</p>
+                                            </div>
+                                        </div>
+                                    `)
+                                : // Irving B. Details (Implicitly dominantAnswer === 'D')
+                                    (currentLanguage === 'cn' ? `
+                                        <div class="details-columns">
+                                            <div class="details-column details-left">
+                                                <p class="detail-group-header">■ 适配度：</p>
+                                                <p>&nbsp;&nbsp;87%</p>
+                                                <p class="detail-group-header">■ 核心特质：</p>
+                                                <p> &nbsp;&nbsp;✓ 黑色颜料记忆编码</p>
+                                                <p> &nbsp;&nbsp;✓ 走廊门禁创伤应激</p>
+                                            </div>
+                                            <div class="details-column details-right">
+                                                <p class="detail-group-header">■ 叛逆指数：</p>
+                                                <p>&nbsp;&nbsp;■■■■■ 91%</p>
+                                                <p class="detail-group-header">■ 卢蒙处置建议：</p>
+                                                <p> &nbsp;&nbsp;✓ 永久禁止接触绘画工具</p>
+                                                <p> &nbsp;&nbsp;✓ 外部分人格列入「反切割技术监视名单」</p>
+                                            </div>
+                                        </div>
+                                    ` : `
+                                        <div class="details-columns">
+                                            <div class="details-column details-left">
+                                                <p class="detail-group-header">■ COMPATIBILITY:</p>
+                                                <p>&nbsp;&nbsp;87%</p>
+                                                <p class="detail-group-header">■ CORE TRAITS:</p>
+                                                <p> &nbsp;&nbsp;✓ Black paint mnemonics</p>
+                                                <p> &nbsp;&nbsp;✓ Hallway access PTSD</p>
+                                            </div>
+                                            <div class="details-column details-right">
+                                                <p class="detail-group-header">■ MEMORY CORRUPTION:</p>
+                                                <p>&nbsp;&nbsp;■■■■■ 91%</p>
+                                                <p class="detail-group-header">■ LUMON COUNTERMEASURES:</p>
+                                                <p> &nbsp;&nbsp;✓ Permanent art supply ban</p>
+                                                <p> &nbsp;&nbsp;✓ External activist surveillance</p>
+                                            </div>
+                                        </div>
+                                    `)
+                                )))
+                            : 
+                                // Fallback - Should not happen
+                                ``
+                            }
                         </div>
                     </div>
                 </div>
-            `;
-
-            document.getElementById('resultContent').innerHTML = reportContent;
+            `
+            const reportContentElement = document.getElementById('reportContent');
+            if (!reportContentElement) { 
+                console.error("Element with ID 'reportContent' not found!");
+                return;
+            }
+            reportContentElement.innerHTML = reportContent;
+            updateUIForLanguage(); 
         }
 
-        // 页面加载时生成报告
-        generateReport();
+        function updateUIForLanguage() {
+            const langButton = document.querySelector('.language-selector button');
+            const footerLeft = document.getElementById('footer-left-text');
+            const footerRight = document.getElementById('footer-right-text');
+            const ogTitleMeta = document.getElementById('ogTitle');
+            const ogDescriptionMeta = document.getElementById('ogDescription');
+            const ogUrlMeta = document.getElementById('ogUrl');
+            const ogImageMeta = document.getElementById('ogImage'); 
+
+            if (ogUrlMeta) ogUrlMeta.setAttribute('content', window.location.href);
+            if (ogImageMeta) ogImageMeta.setAttribute('content', 'https://i.ibb.co/kVXZ2yWW/share.png'); 
+
+            if (currentLanguage === 'cn') {
+                if (langButton) langButton.textContent = 'CN';
+                document.getElementById('visitorPrefix').textContent = '访客_#';
+                document.getElementById('visitorStatus').textContent = '未授权';
+                if (footerLeft) footerLeft.innerHTML = `由 <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> 制作 (未获基尔认证)`;
+                if (footerRight) footerRight.textContent = '开发工具: Cursor, Deepseek';
+                if (ogTitleMeta) ogTitleMeta.setAttribute('content', '卢蒙宏观数据精算部人格校准测试');
+                if (ogDescriptionMeta) ogDescriptionMeta.setAttribute('content', '测测你是马克、赫莉、迪伦还是欧文？你的企业人格正在待命。');
+            } else { // en
+                if (langButton) langButton.textContent = 'EN';
+                document.getElementById('visitorPrefix').textContent = 'Visitor_#';
+                document.getElementById('visitorStatus').textContent = 'Unauthorized';
+                if (footerLeft) footerLeft.innerHTML = `Created by <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a> (not Kier-approved)`;
+                if (footerRight) footerRight.textContent = 'Built with: Cursor & DeepSeek';
+                if (ogTitleMeta) ogTitleMeta.setAttribute('content', 'Lumon MDR Personality Alignment Assessment');
+                if (ogDescriptionMeta) ogDescriptionMeta.setAttribute('content', 'Discover which Macrodata Refinement employee you are — Mark, Helly, Dylan or Irving. Your severed self awaits.');
+            }
+        }
     </script>
 </body>
-</html> 
+</html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="images/favicon.png">
-    <title>LUMON记忆切割评估系统</title>
+    <title>卢蒙人格校准测试 v4.7.9</title>
     <style>
         * {
             margin: 0;
@@ -138,7 +138,7 @@
         }
 
         .visitor-status {
-            color: #666;
+            color: #276B7B;
             margin-left: 8px;
         }
 
@@ -169,11 +169,45 @@
             font-size: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-family: monospace;
         }
 
         .language-selector button:hover {
             background-color: #0D242E;
             color: #fff;
+        }
+
+        .volume-control {
+            position: absolute;
+            right: 4.5rem;
+        }
+
+        .volume-control button {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 1px solid #0D242E;
+            background: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+        }
+
+        .volume-control button:hover {
+            background-color: #0D242E;
+        }
+
+        .volume-control button:hover img {
+            filter: invert(1);
+        }
+
+        .volume-control img {
+            width: 16px;
+            height: 16px;
+            transition: all 0.3s ease;
         }
 
         .main-content {
@@ -281,6 +315,14 @@
             right: 0;
             top: 0;
             bottom: 0;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.1s ease-in-out; 
+        }
+
+        /* Show glitch layers on hover OR auto-hover */
+        .image-item:hover .glitch__layers,
+        .image-item.auto-hover .glitch__layers {
+            opacity: 1;
         }
 
         .glitch__layer {
@@ -362,12 +404,15 @@
             font-size: 2.25rem;
             margin-bottom: 0.25rem;
             color: #0D242E;
+            letter-spacing: -0.06em;
+            font-family: "Helvetica Neue", Arial, sans-serif;
         }
 
         .subtitle {
-            font-size: 1.25rem;
+            font-size: 1rem;
             color: #0D242E;
             margin-top: -0.25rem;
+            font-family: monospace;
         }
 
         .subtitle-container {
@@ -383,18 +428,20 @@
             white-space: nowrap;
             margin: 0;
             display: inline-block;
-            width: 0;
+            width: 0; /* Start with zero width */
         }
 
         .typewriter.typing {
+            /* Use CSS variables for steps and duration */
             animation: 
-                typing 3.5s steps(40, end),
+                typing var(--duration) steps(var(--steps), end),
                 blink-caret .75s step-end infinite;
+            width: auto; /* Allow animation to control width */
         }
 
         @keyframes typing {
-            from { width: 0 }
-            to { width: var(--text-width) }
+            from { width: 0 } 
+            to { width: var(--text-width); } /* Animate to calculated text width */
         }
 
         @keyframes blink-caret {
@@ -410,9 +457,10 @@
         }
 
         .button-note {
-            font-size: 12px;
-            color: #666;
+            font-size: 0.6rem;
+            color: #276B7B;
             font-family: monospace;
+            letter-spacing: -0.05em;
         }
 
         .get-started-btn {
@@ -426,6 +474,8 @@
             line-height: 1;
             width: 370px;
             transition: all 0.3s ease;
+            font-family: monospace;
+            letter-spacing: 0.05em;
         }
 
         .get-started-btn:hover {
@@ -460,6 +510,12 @@
             font-size: 12px;
             font-family: monospace;
             color: #0D242E;
+        }
+
+        /* Ensure footer link is underlined */
+        .footer-left p a {
+            color: inherit; /* Keep the same color as surrounding text */
+            text-decoration: underline; 
         }
 
         /* 响应式设计 */
@@ -554,7 +610,7 @@
             }
 
             .language-selector {
-                right: 2.5rem;
+                right: 5rem;
             }
 
             .main-title {
@@ -620,9 +676,178 @@
                 padding: 1rem 2.5rem;
             }
         }
+
+        /* 添加欢迎蒙层样式 */
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(13, 36, 46, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .welcome-content {
+            text-align: center;
+            color: #fff;
+            padding: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-family: monospace;
+        }
+
+        .welcome-text {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            font-family: monospace;
+            line-height: 1.5;
+        }
+
+        .welcome-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .welcome-button {
+            padding: 0.75rem 2rem;
+            font-size: 0.9rem;
+            background-color: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .welcome-button img {
+            width: 16px;
+            height: 16px;
+            transition: all 0.3s ease;
+            filter: brightness(0) invert(1); /* 默认白色 */
+        }
+
+        .welcome-button:hover {
+            background-color: #fff;
+            color: #0D242E;
+        }
+
+        .welcome-button:hover img {
+            filter: brightness(0) invert(0); /* 悬停时变为深色 */
+        }
+
+        .welcome-button.primary {
+            background-color: #fff;
+            color: #0D242E;
+        }
+
+        .welcome-button.primary img {
+            filter: brightness(0) invert(0); /* 默认深色 */
+        }
+
+        .welcome-button.primary:hover {
+            background-color: transparent;
+            color: #fff;
+        }
+
+        .welcome-button.primary:hover img {
+            filter: brightness(0) invert(1); /* 悬停时变为白色 */
+        }
+
+        @media (max-width: 768px) {
+            .welcome-content {
+                padding: 1rem;
+            }
+
+            .welcome-title {
+                font-size: 1.25rem;
+            }
+
+            .welcome-text {
+                font-size: 0.9rem;
+            }
+
+            .welcome-buttons {
+                flex-direction: column;
+            }
+
+            .welcome-button {
+                width: 100%;
+            }
+        }
+
+        .character-status .status-text {
+            font-size: 10px;
+            margin-top: 5px;
+            color: #0D242E;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .welcome-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #fff;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .welcome-disclaimer {
+            font-size: 0.6rem;
+            color: #BEDEE3;
+            font-family: monospace;
+            margin-top: 0.75rem;
+            text-align: center;
+        }
+
+        .character-status {
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.1s ease-in-out;
+        }
+
+        /* Show status text on hover OR auto-hover */
+        .image-item:hover .status-text,
+        .image-item.auto-hover .status-text {
+            opacity: 1;
+        }
+
+        /* Show individual glitch layers on auto-hover */
+        .image-item.auto-hover .glitch__layer {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+    <!-- 添加欢迎蒙层 -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="welcome-content">
+            <h1 class="welcome-title" id="welcomeTitle">WELCOME TO LUMON INDUSTRIES</h1>
+            <p class="welcome-text" id="welcomeText">To enhance your experience, we recommend enabling audio.<br>Would you like to proceed with sound?</p>
+            <div class="welcome-buttons">
+                <button class="welcome-button primary" onclick="enableSound()">
+                    <img src="images/volume-on.svg" alt="Enable Sound">
+                    Enable Sound
+                </button>
+                <button class="welcome-button" onclick="disableSound()">
+                    <img src="images/volume-off.svg" alt="Disable Sound">
+                    Disable Sound
+                </button>
+            </div>
+            <p class="welcome-disclaimer">&copy; All audio data property of Lumon Industries per Kier's Principle 7</p>
+        </div>
+    </div>
+
     <div class="grid-container">
         <!-- 垂直分割线 -->
         <div class="vertical-divider vertical-divider-1"></div>
@@ -640,21 +865,34 @@
 
         <header class="header">
             <div class="visitor-info">
-                <span class="visitor-id"><span id="visitorPrefix">访客_#</span><span id="visitorNumber"></span></span>
-                <span class="visitor-status">• <span id="visitorStatus">未授权</span></span>
+                <span class="visitor-id"><span id="visitorPrefix">Visitor_#</span><span id="visitorNumber"></span></span>
+                <span class="visitor-status">• <span id="visitorStatus">Unauthorized</span></span>
             </div>
             <div class="logo">
                 <img src="images/lumon-logo-stroke.svg" alt="Logo">
             </div>
             <div class="language-selector">
-                <button onclick="toggleLanguage(this)">CN</button>
+                <button onclick="toggleLanguage(this)">EN</button>
+            </div>
+            <div class="volume-control">
+                <button onclick="toggleVolume(this)">
+                    <img src="images/volume-on.svg" alt="Volume" id="volumeIcon">
+                </button>
             </div>
         </header>
 
+        <!-- 添加音频元素 -->
+        <audio id="bgMusic" loop>
+            <source src="audio/background.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="buttonSound">
+            <source src="audio/button-click.mp3" type="audio/mpeg">
+        </audio>
+
         <main class="main-content">
             <div class="image-grid">
-                <div class="image-item glitch">
-                    <div class="status-text">Mark S.，状态: 监控中</div>
+                <div class="image-item glitch" id="mark-s-item">
+                    <div class="status-text">Mark S. Status: Monitored</div>
                     <img src="images/character1.png" alt="Character 1">
                     <div class="glitch__layers">
                         <div class="glitch__layer"></div>
@@ -662,7 +900,7 @@
                     </div>
                 </div>
                 <div class="image-item glitch">
-                    <div class="status-text">Helly R.，状态: 监控中</div>
+                    <div class="status-text">Helly R. Status: Monitored</div>
                     <img src="images/character2.png" alt="Character 2">
                     <div class="glitch__layers">
                         <div class="glitch__layer"></div>
@@ -670,7 +908,7 @@
                     </div>
                 </div>
                 <div class="image-item glitch">
-                    <div class="status-text">Irving B.，状态: 监控中</div>
+                    <div class="status-text">Irving B. Status: Monitored</div>
                     <img src="images/character3.png" alt="Character 3">
                     <div class="glitch__layers">
                         <div class="glitch__layer"></div>
@@ -678,7 +916,7 @@
                     </div>
                 </div>
                 <div class="image-item glitch">
-                    <div class="status-text">Dylan G.，状态: 监控中</div>
+                    <div class="status-text">Dylan G. Status: Monitored</div>
                     <img src="images/character4.png" alt="Character 4">
                     <div class="glitch__layers">
                         <div class="glitch__layer"></div>
@@ -688,21 +926,21 @@
             </div>
 
             <div class="title-section">
-                <h1 class="main-title" id="mainTitle">LUMON记忆切割评估系统</h1>
+                <h1 class="main-title" id="mainTitle">Lumon Personality Calibration Test v4.7.9</h1>
                 <div class="subtitle-container">
                     <p class="subtitle typewriter"></p>
                 </div>
             </div>
 
             <div class="button-section">
-                <button class="get-started-btn" id="startButton" onclick="window.location.href='quiz.html'">进入评估程序</button>
-                <div class="button-note">《Severance协议》第7.3条强制要求</div>
+                <button class="get-started-btn" id="startButton">+ START EVALUATION +</button>
+                <div class="button-note" id="buttonNote">✓ Mandated by Section 7.3 of the SEVERANCE PROTOCOL</div>
             </div>
         </main>
 
         <footer class="footer">
             <div class="footer-left">
-                <p>Made with love by koko</p>
+                <p>Made with love by <a href="https://www.linkedin.com/in/lvling/" target="_blank">koko</a></p>
             </div>
             <div class="footer-right">
                 <p>Tools used: Cursor, Deepseek</p>
@@ -711,6 +949,91 @@
     </div>
 
     <script>
+        // 音频控制
+        const bgMusic = document.getElementById('bgMusic');
+        const buttonSound = document.getElementById('buttonSound');
+        const welcomeOverlay = document.getElementById('welcomeOverlay');
+        const welcomeTitle = document.getElementById('welcomeTitle');
+        const welcomeText = document.getElementById('welcomeText');
+        let isMuted = false;
+
+        // 检查是否已经做出过选择
+        const hasMadeChoice = localStorage.getItem('soundChoice');
+        
+        if (!hasMadeChoice) {
+            // 显示欢迎蒙层
+            welcomeOverlay.style.display = 'flex';
+        } else {
+            // 如果已经做出过选择，根据选择设置音频状态
+            const soundEnabled = localStorage.getItem('soundEnabled') === 'true';
+            isMuted = !soundEnabled;
+            updateAudioState();
+        }
+
+        // 启用声音
+        function enableSound() {
+            localStorage.setItem('soundEnabled', true);
+            localStorage.setItem('soundChoice', 'made'); // 记录用户已做选择
+            isMuted = false;
+            bgMusic.muted = false;
+            buttonSound.muted = false;
+            bgMusic.play().catch(error => console.log("BG music play failed:", error));
+            updateAudioState();
+            hideWelcomeOverlay();
+            cycleCharacterEffect(); // Trigger effect
+        }
+
+        // 禁用声音
+        function disableSound() {
+            localStorage.setItem('soundEnabled', false);
+            localStorage.setItem('soundChoice', 'made'); // 记录用户已做选择
+            isMuted = true;
+            bgMusic.muted = true;
+            buttonSound.muted = true;
+            bgMusic.pause();
+            updateAudioState();
+            hideWelcomeOverlay();
+            cycleCharacterEffect(); // Trigger effect
+        }
+
+        // 更新音频状态
+        function updateAudioState() {
+            const volumeIcon = document.getElementById('volumeIcon');
+            if (volumeIcon) {
+                volumeIcon.src = isMuted ? 'images/volume-off.svg' : 'images/volume-on.svg';
+            }
+            bgMusic.muted = isMuted;
+            buttonSound.muted = isMuted;
+        }
+
+        // 隐藏欢迎蒙层
+        function hideWelcomeOverlay() {
+            const welcomeOverlay = document.getElementById('welcomeOverlay');
+            if (welcomeOverlay) {
+                welcomeOverlay.style.display = 'none';
+            }
+        }
+
+        // 音量控制功能
+        function toggleVolume(button) {
+            isMuted = !isMuted;
+            localStorage.setItem('soundEnabled', !isMuted);
+            updateAudioState();
+        }
+
+        // 为开始按钮添加音效
+        document.getElementById('startButton').addEventListener('mouseenter', (e) => {
+            // 降低背景音乐音量
+            bgMusic.volume = 0.3;
+            buttonSound.currentTime = 0;
+            buttonSound.play().catch(error => console.log("Button sound failed:", error));
+            
+            // 播放完音效后恢复背景音乐音量
+            setTimeout(() => {
+                bgMusic.volume = 1.0;
+            }, 500); // 500ms后恢复
+        });
+
         // 生成随机4位数访客ID
         function generateVisitorId() {
             return Math.floor(1000 + Math.random() * 9000);
@@ -721,62 +1044,185 @@
 
         // 文字循环切换
         const texts = {
-            cn: [
-                "根据EEG-479协议，本次评估将检测您与部门角色的潜在契合度",
-                "请记住：自愿参与评估是员工忠诚度的首要体现。—— Kier《致员工书》第3章",
-                "⚠️ 警告：测试过程可能触发记忆闪回"
-            ],
-            en: [
-                "According to EEG-479 protocol, this assessment will evaluate your potential compatibility with department roles",
-                "Remember: Voluntary participation in assessment is the primary indicator of employee loyalty. — Kier, 'Letters to Employees' Chapter 3",
-                "⚠️ Warning: Test process may trigger memory flashbacks"
-            ]
+            cn: {
+                visitorPrefix: '访客_#',
+                visitorStatus: '未授权',
+                mainTitle: '卢蒙人格校准测试 v4.7.9',
+                startButton: '进入测试程序',
+                buttonNote: '《Severance协议》第7.3条强制要求',
+                subtitles: [
+                    "欢迎评估您与宏观数据精算部成员的契合度。",
+                    "自愿参与评估是员工忠诚度的首要体现。—— Kier《致员工书》第3章",
+                    "根据《Severance协议》，虚假回答将导致永久记忆隔离。"
+                ]
+            },
+            en: {
+                visitorPrefix: 'Visitor_#',
+                visitorStatus: 'Unauthorized',
+                mainTitle: 'Lumon Personality Calibration Test v4.7.9',
+                startButton: '+ START EVALUATION +',
+                buttonNote: '✓ Mandated by Section 7.3 of the SEVERANCE PROTOCOL',
+                subtitles: [
+                    "Welcome to MDR Personality Alignment Assessment.",
+                    "\"Participation reflects loyalty.\" — Kier, \"To the Workers\", 3",
+                    "False answers trigger memory isolation per SEVERANCE PROTOCOL."
+                ]
+            }
         };
         
         let currentTextIndex = 0;
-        let currentLanguage = 'cn';
+        let currentLanguage = 'en';
         const typewriterElement = document.querySelector('.typewriter');
         
         function updateText() {
-            typewriterElement.textContent = texts[currentLanguage][currentTextIndex];
-            // 计算文本实际宽度
-            const textWidth = typewriterElement.scrollWidth;
-            typewriterElement.style.setProperty('--text-width', `${textWidth}px`);
-            typewriterElement.style.width = '0';
-            typewriterElement.classList.remove('typing');
-            typewriterElement.offsetHeight; // 触发重排
-            typewriterElement.classList.add('typing');
+            // Use subtitles array
+            const currentSubtitle = texts[currentLanguage].subtitles[currentTextIndex];
             
-            // 等待打字机效果完成后再切换到下一句
+            // Calculate animation duration (e.g., 80ms per character)
+            const animationDuration = currentSubtitle.length * 0.08;
+            
+            // Set the text content FIRST
+            typewriterElement.textContent = currentSubtitle;
+
+            // THEN calculate the actual width needed
+            const textWidth = typewriterElement.scrollWidth;
+            
+            // Set CSS variables needed by the animation
+            typewriterElement.style.setProperty('--steps', currentSubtitle.length);
+            typewriterElement.style.setProperty('--duration', `${animationDuration}s`);
+            typewriterElement.style.setProperty('--text-width', `${textWidth}px`); // Set text width variable
+            
+            // Restart the animation
+            typewriterElement.classList.remove('typing');
+            void typewriterElement.offsetWidth; // Force browser reflow
+            typewriterElement.classList.add('typing');
+
+            // Wait for animation to finish + pause before switching
             setTimeout(() => {
-                currentTextIndex = (currentTextIndex + 1) % texts[currentLanguage].length;
+                // Cycle through subtitles
+                currentTextIndex = (currentTextIndex + 1) % texts[currentLanguage].subtitles.length;
                 updateText();
-            }, 3500 + 1000); // 3.5秒打字效果 + 1秒停留时间
+            }, animationDuration * 1000 + 1500); // Animation time + 1.5s pause
         }
 
+        // 初始加载
+        window.addEventListener('DOMContentLoaded', (event) => {
+            // 读取保存的语言设置，默认为 'en'
+            currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+            
+            // 设置初始按钮文本和页面内容
+            const langButton = document.querySelector('.language-selector button');
+            if (currentLanguage === 'cn') {
+                langButton.textContent = 'CN';
+                document.getElementById('visitorPrefix').textContent = texts.cn.visitorPrefix;
+                document.getElementById('visitorStatus').textContent = texts.cn.visitorStatus;
+                document.getElementById('mainTitle').textContent = texts.cn.mainTitle;
+                document.getElementById('startButton').textContent = texts.cn.startButton;
+                document.getElementById('buttonNote').textContent = texts.cn.buttonNote;
+            } else {
+                langButton.textContent = 'EN';
+                document.getElementById('visitorPrefix').textContent = texts.en.visitorPrefix;
+                document.getElementById('visitorStatus').textContent = texts.en.visitorStatus;
+                document.getElementById('mainTitle').textContent = texts.en.mainTitle;
+                document.getElementById('startButton').textContent = texts.en.startButton;
+                document.getElementById('buttonNote').textContent = texts.en.buttonNote;
+            }
+
+            // 更新音量图标状态
+            updateAudioState();
+
+            // 显示欢迎覆盖层（如果需要）
+            const hasMadeChoice = localStorage.getItem('soundChoice');
+            if (!hasMadeChoice && welcomeOverlay) {
+                welcomeOverlay.style.display = 'flex';
+            } else {
+                // 如果已选择，根据选择设置音频状态并尝试播放
+                const soundEnabled = localStorage.getItem('soundEnabled') === 'true';
+                isMuted = !soundEnabled;
+                updateAudioState();
+                if(soundEnabled && bgMusic.paused){
+                     bgMusic.play().catch(error => console.log("Audio play failed on load:", error));
+                }
+            }
+            
+            // 在确定语言后启动副标题轮播
+            updateText(); 
+        });
+
+        // 语言切换功能
         function toggleLanguage(button) {
             if (button.textContent === 'CN') {
                 button.textContent = 'EN';
-                document.getElementById('visitorPrefix').textContent = 'Visitor_#';
-                document.getElementById('visitorStatus').textContent = 'Unauthorized';
-                document.getElementById('mainTitle').textContent = 'LUMON Memory Severance Assessment System';
-                document.getElementById('startButton').textContent = 'Enter Assessment';
+                document.getElementById('visitorPrefix').textContent = texts.en.visitorPrefix;
+                document.getElementById('visitorStatus').textContent = texts.en.visitorStatus;
+                document.getElementById('mainTitle').textContent = texts.en.mainTitle;
+                document.getElementById('startButton').textContent = texts.en.startButton;
+                document.getElementById('buttonNote').textContent = texts.en.buttonNote;
                 currentLanguage = 'en';
             } else {
                 button.textContent = 'CN';
-                document.getElementById('visitorPrefix').textContent = '访客_#';
-                document.getElementById('visitorStatus').textContent = '未授权';
-                document.getElementById('mainTitle').textContent = 'LUMON记忆切割评估系统';
-                document.getElementById('startButton').textContent = '进入评估程序';
+                document.getElementById('visitorPrefix').textContent = texts.cn.visitorPrefix;
+                document.getElementById('visitorStatus').textContent = texts.cn.visitorStatus;
+                document.getElementById('mainTitle').textContent = texts.cn.mainTitle;
+                document.getElementById('startButton').textContent = texts.cn.startButton;
+                document.getElementById('buttonNote').textContent = texts.cn.buttonNote;
                 currentLanguage = 'cn';
             }
-            // 重置打字机效果
-            currentTextIndex = 0;
-            updateText();
+            // 保存语言偏好
+            localStorage.setItem('preferredLanguage', currentLanguage);
         }
 
-        // 初始显示
-        updateText();
+        // 为开始按钮添加点击事件监听器
+        const startButton = document.getElementById('startButton');
+        if (startButton) {
+            startButton.addEventListener('click', () => {
+                // 保存当前语言设置
+                localStorage.setItem('preferredLanguage', currentLanguage);
+                // 播放点击音效
+                buttonSound.currentTime = 0;
+                buttonSound.play().catch(error => console.log("Button click sound failed:", error));
+                // 延迟跳转以播放音效
+                setTimeout(() => {
+                    window.location.href = 'quiz.html';
+                }, 300); // 等待300毫秒
+            });
+        }
+
+        // 触发 Mark S. 效果 - Rename and modify for cycling
+        let currentEffectIndex = -1; // Start before the first item
+        let effectTimeoutId = null; // To store the main cycle timeout ID
+        let removeEffectTimeoutId = null; // To store the timeout ID for removing the class after 2s
+
+        function cycleCharacterEffect() { // Renamed function
+            clearTimeout(effectTimeoutId); // Clear pending main cycle
+            clearTimeout(removeEffectTimeoutId); // Clear pending effect removal
+
+            const allItems = document.querySelectorAll('.image-grid .image-item');
+            if (allItems.length === 0) return; // Exit if no items found
+
+            // Move to the next index for the item to be activated
+            currentEffectIndex = (currentEffectIndex + 1) % allItems.length;
+            const currentItem = allItems[currentEffectIndex];
+
+            if (currentItem) {
+                // Add class to the new current item to show effect
+                currentItem.classList.add('auto-hover');
+
+                // Set a short timeout (2s) to REMOVE the effect class
+                removeEffectTimeoutId = setTimeout(() => {
+                    if (currentItem) { // Check if item still exists
+                       currentItem.classList.remove('auto-hover');
+                    }
+                }, 2000); // Effect display duration
+
+                // Set a long timeout (10s) to trigger the next cycle 
+                // (2s effect display + 8s wait)
+                effectTimeoutId = setTimeout(cycleCharacterEffect, 10000); 
+            }
+        }
+
+        // Alias the old function name to the new one for the existing calls
+        const triggerMarkSEffect = cycleCharacterEffect; 
     </script>
 </body>
 </html> 
