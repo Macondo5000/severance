@@ -1120,8 +1120,8 @@
 
         // Function to prepare and SHOW share links popup
         function prepareShareLinks() {
-            // Construct the full public URL for the current result page
-            const pageUrl = baseUrl + "result.html" + window.location.search;
+            // Use the index page URL instead of result page
+            const pageUrl = baseUrl;
             const pageTitle = document.getElementById('ogTitle')?.getAttribute('content') || document.title;
 
             const encodedUrl = encodeURIComponent(pageUrl);
