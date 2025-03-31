@@ -808,7 +808,7 @@
                     <button class="action-button retake" onclick="retakeTest()">RETRY</button>
                     <button class="action-button" onclick="prepareShareLinks()">SHARE</button>
                     <div class="download-button" onclick="downloadReport()">
-                        <img src="https://lumonindustries.netlify.app/images/download.svg" alt="Download">
+                        <img src="images/download.svg" alt="Download">
                     </div>
                 </div>
             </div>
@@ -1408,44 +1408,13 @@
                     return;
             }
 
-            // 创建一个 img 元素来加载图片
-            const img = new Image();
-            img.crossOrigin = 'anonymous';  // 允许跨域
-            img.onload = function() {
-                // 创建 canvas
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                
-                // 将图片绘制到 canvas
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
-                
-                // 将 canvas 转换为 blob
-                canvas.toBlob(function(blob) {
-                    // 创建 blob URL
-                    const url = URL.createObjectURL(blob);
-                    
-                    // 创建下载链接
-                    const link = document.createElement('a');
-                    link.style.display = 'none';
-                    link.href = url;
-                    link.download = 'lumon-report.png'; // 强制下载而不是预览
-                    
-                    // 添加到页面并触发点击
-                    document.body.appendChild(link);
-                    link.click();
-                    
-                    // 清理
-                    setTimeout(() => {
-                        document.body.removeChild(link);
-                        URL.revokeObjectURL(url);
-                    }, 100);
-                }, 'image/png');
-            };
-            
-            // 设置图片源
-            img.src = `https://lumonindustries.netlify.app/images/${imageName}`;
+            // 创建下载链接
+            const link = document.createElement('a');
+            link.href = `images/${imageName}`;
+            link.download = 'lumon-report.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
