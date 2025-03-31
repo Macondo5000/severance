@@ -11,6 +11,7 @@
     <meta id="ogTitle" property="og:title" content="" />
     <meta id="ogDescription" property="og:description" content="" />
     <meta id="ogImage" property="og:image" content="https://i.ibb.co/kVXZ2yWW/share.png" /> 
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -363,7 +364,9 @@
 
         .button-container {
             display: flex;
-            gap: 20px;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
         }
 
         .action-button {
@@ -375,8 +378,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
-            width: 260px;
-            height: 42px;
+            width: 180px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -396,6 +399,34 @@
         .action-button.retake:hover {
             background-color: #0D242E;
             color: #fff;
+        }
+
+        .download-button {
+            position: static;
+            width: 32px;
+            height: 32px;
+            border: 1px solid #0D242E;
+            background-color: #0D242E;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .download-button:hover {
+            background-color: #fff;
+        }
+
+        .download-button:hover img {
+            filter: none;
+        }
+
+        .download-button img {
+            width: 16px;
+            height: 16px;
+            transition: all 0.3s ease;
+            filter: invert(1);
         }
 
         .footer {
@@ -766,17 +797,19 @@
 
         <!-- 添加音频元素 -->
         <audio id="reportSound">
-            <source src="audio/report-generate.mp3" type="audio/mpeg">
+            <source src="audio/typewriter.mp3" type="audio/mpeg">
         </audio>
 
         <main class="main-content">
             <div class="result-container">
                 <div class="result-content" id="reportContent">
-                    <!-- 结果内容将通过 JavaScript 动态生成 -->
                 </div>
                 <div class="button-container">
                     <button class="action-button retake" onclick="retakeTest()">RETRY</button>
                     <button class="action-button" onclick="prepareShareLinks()">SHARE</button>
+                    <div class="download-button" onclick="downloadReport()">
+                        <img src="images/download.svg" alt="Download">
+                    </div>
                 </div>
             </div>
         </main>
@@ -807,6 +840,23 @@
         let isMuted = localStorage.getItem('soundEnabled') === 'false';
         let currentLanguage = 'en';
         let answers = '';
+
+        // 更新音频状态
+        function updateAudioState() {
+            const savedMuteState = localStorage.getItem('soundEnabled');
+            isMuted = savedMuteState === 'false';
+            
+            // 更新音量图标
+            const volumeIcon = document.getElementById('volumeIcon');
+            if (volumeIcon) {
+                volumeIcon.src = isMuted ? 'images/volume-off.svg' : 'images/volume-on.svg';
+            }
+            
+            // 设置音频静音状态
+            if (reportSound) {
+                reportSound.muted = isMuted;
+            }
+        }
 
         // 音量控制功能
         function toggleVolume(button) {
@@ -856,6 +906,7 @@
             cn: {
                 download: "下载报告",
                 retake: "重新测试",
+                share: "分享",
                 visitorPrefix: "访客_#",
                 visitorStatus: "未授权",
                 footerLeft: "由 <a href=\"https://www.linkedin.com/in/lvling/\" target=\"_blank\">koko</a> 制作 (未获基尔认证)",
@@ -863,7 +914,8 @@
             },
             en: {
                 download: "Download Report",
-                retake: "+ Test Again +",
+                retake: "Test Again",
+                share: "SHARE",
                 visitorPrefix: "Visitor_#",
                 visitorStatus: "Unauthorized",
                 footerLeft: "Created by <a href=\"https://www.linkedin.com/in/lvling/\" target=\"_blank\">koko</a> (not Kier-approved)",
@@ -965,6 +1017,7 @@
                 document.getElementById('visitorPrefix').textContent = texts.en.visitorPrefix;
                 document.getElementById('visitorStatus').textContent = texts.en.visitorStatus;
                 document.querySelector('.action-button.retake').textContent = texts.en.retake;
+                document.querySelector('.action-button:not(.retake)').textContent = texts.en.share;
                 document.querySelector('.footer-left p').innerHTML = texts.en.footerLeft;
                 document.querySelector('.footer-right p').textContent = texts.en.footerRight;
                 currentLanguage = 'en';
@@ -973,6 +1026,7 @@
                 document.getElementById('visitorPrefix').textContent = texts.cn.visitorPrefix;
                 document.getElementById('visitorStatus').textContent = texts.cn.visitorStatus;
                 document.querySelector('.action-button.retake').textContent = texts.cn.retake;
+                document.querySelector('.action-button:not(.retake)').textContent = texts.cn.share;
                 document.querySelector('.footer-left p').innerHTML = texts.cn.footerLeft;
                 document.querySelector('.footer-right p').textContent = texts.cn.footerRight;
                 currentLanguage = 'cn';
@@ -991,12 +1045,16 @@
             if (langButton) {
                 if (currentLanguage === 'cn') {
                     langButton.textContent = 'CN';
-                    document.getElementById('visitorPrefix').textContent = '访客_#';
-                    document.getElementById('visitorStatus').textContent = '未授权';
+                    document.getElementById('visitorPrefix').textContent = texts.cn.visitorPrefix;
+                    document.getElementById('visitorStatus').textContent = texts.cn.visitorStatus;
+                    document.querySelector('.action-button.retake').textContent = texts.cn.retake;
+                    document.querySelector('.action-button:not(.retake)').textContent = texts.cn.share;
                 } else {
                     langButton.textContent = 'EN';
-                    document.getElementById('visitorPrefix').textContent = 'Visitor_#';
-                    document.getElementById('visitorStatus').textContent = 'Unauthorized';
+                    document.getElementById('visitorPrefix').textContent = texts.en.visitorPrefix;
+                    document.getElementById('visitorStatus').textContent = texts.en.visitorStatus;
+                    document.querySelector('.action-button.retake').textContent = texts.en.retake;
+                    document.querySelector('.action-button:not(.retake)').textContent = texts.en.share;
                 }
             }
 
@@ -1043,16 +1101,16 @@
 
             if (currentLanguage === 'cn') {
                 if (langButton) langButton.textContent = 'CN';
-                document.getElementById('visitorPrefix').textContent = '访客_#';
-                document.getElementById('visitorStatus').textContent = '未授权';
+                document.getElementById('visitorPrefix').textContent = texts.cn.visitorPrefix;
+                document.getElementById('visitorStatus').textContent = texts.cn.visitorStatus;
                 if (footerLeft) footerLeft.innerHTML = texts.cn.footerLeft;
                 if (footerRight) footerRight.textContent = texts.cn.footerRight;
                 if (ogTitleMeta) ogTitleMeta.setAttribute('content', '卢蒙宏观数据精算部人格校准测试');
                 if (ogDescriptionMeta) ogDescriptionMeta.setAttribute('content', '测测你是马克、赫莉、迪伦还是欧文？你的企业人格正在待命。');
             } else { // en
                 if (langButton) langButton.textContent = 'EN';
-                document.getElementById('visitorPrefix').textContent = 'Visitor_#';
-                document.getElementById('visitorStatus').textContent = 'Unauthorized';
+                document.getElementById('visitorPrefix').textContent = texts.en.visitorPrefix;
+                document.getElementById('visitorStatus').textContent = texts.en.visitorStatus;
                 if (footerLeft) footerLeft.innerHTML = texts.en.footerLeft;
                 if (footerRight) footerRight.textContent = texts.en.footerRight;
                 if (ogTitleMeta) ogTitleMeta.setAttribute('content', 'Lumon MDR Personality Alignment Assessment');
@@ -1312,14 +1370,82 @@
                         </div>
                     </div>
                 </div>
-            `
+            `;
             const reportContentElement = document.getElementById('reportContent');
             if (!reportContentElement) { 
                 console.error("Element with ID 'reportContent' not found!");
                 return;
             }
+            // 更新内容
             reportContentElement.innerHTML = reportContent;
             updateUIForLanguage(); 
+        }
+
+        function downloadReport() {
+            // 获取当前角色
+            const roleImage = document.querySelector('.role-image');
+            if (!roleImage) return;
+            
+            const role = roleImage.getAttribute('data-role');
+            let imageName;
+            
+            // 根据角色选择对应的下载图片
+            switch(role) {
+                case 'A':
+                    imageName = 'mark-download.png';
+                    break;
+                case 'B':
+                    imageName = 'helly-download.png';
+                    break;
+                case 'C':
+                    imageName = 'dylan-download.png';
+                    break;
+                case 'D':
+                    imageName = 'irving-download.png';
+                    break;
+                default:
+                    console.error('Unknown role:', role);
+                    return;
+            }
+
+            // 创建一个 img 元素来加载图片
+            const img = new Image();
+            img.crossOrigin = 'anonymous';  // 允许跨域
+            img.onload = function() {
+                // 创建 canvas
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // 将图片绘制到 canvas
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                
+                // 将 canvas 转换为 blob
+                canvas.toBlob(function(blob) {
+                    // 创建 blob URL
+                    const url = URL.createObjectURL(blob);
+                    
+                    // 创建下载链接
+                    const link = document.createElement('a');
+                    link.style.display = 'none';
+                    link.href = url;
+                    link.download = 'lumon-report.png'; // 强制下载而不是预览
+                    
+                    // 添加到页面并触发点击
+                    document.body.appendChild(link);
+                    link.click();
+                    
+                    // 清理
+                    setTimeout(() => {
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                }, 'image/png');
+            };
+            
+            // 设置图片源
+            img.src = `https://lumonindustries.netlify.app/images/${imageName}`;
         }
     </script>
 </body>
